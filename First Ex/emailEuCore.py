@@ -16,7 +16,7 @@ print ('Is Directed: {}'.format(nx.is_directed(G)))
 print ('Is Weighted: {}'.format(nx.is_weighted(G)))
 
 # Drawing the Graph using matplotlib
-nx.draw(G, node_color=['green'], with_labels=True)
+nx.draw_networkx(G, node_color=['green'], with_labels=True)
 plt.show()
 
 # After the Graph plotting, we can see the distribution of the nodes and the edges between them, 
