@@ -1,3 +1,7 @@
 snap-stanford-5.0.0-5.0-Win-x64-py3.7
+.vscode
 *.plt
 *.tab
+*.pdf
+*.rar
+*.zip
