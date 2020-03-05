@@ -2,7 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 # Generate the graph reading the dataset in txt format
-G = nx.read_edgelist('DataSets/email-Eu-core.txt')
+G = nx.read_edgelist('DataSets/email-Eu-core.txt', create_using = nx.DiGraph())
 
 # Print the graph information
 # Type: Graph

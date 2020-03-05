@@ -6,7 +6,7 @@ import time
 Graph = snap.LoadConnList(snap.PUNGraph, "DataSets/facebook_combined.txt")
 
 SrcNode = 0 # Source node
-k = 3 # distance of neighbour nodes
+k = 5 # distance of neighbour nodes
 
 # We already have the Graph loaded, now implement the BFS transversal 
 # GetBfsTree(Graph, StartNId, FollowOut, FollowIn)
@@ -22,7 +22,7 @@ counter = 0
 # Print the list of BFS tree found
 for EI in BfsTree.Edges():
     counter += 1
-    # print("Edge from %d to %d in generated tree." % (EI.GetSrcNId(), EI.GetDstNId()))
+    print("Edge from %d to %d in generated tree." % (EI.GetSrcNId(), EI.GetDstNId()))
 
 print('Number of edges: {}'.format(counter))
 

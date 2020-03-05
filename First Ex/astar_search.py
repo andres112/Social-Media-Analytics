@@ -24,7 +24,7 @@ def aStarSearchTraverse(G, q, v, dest, previous_node, heuristics):
 
 	neighbors = G[v[1]]
 
-	# handle the parent or previous node of the current node
+	# handle the previous node of the current node
 	if not (v[1] in previous_node):
 		auxlen = len(previous_node)
 		for key in previous_node:
@@ -39,7 +39,7 @@ def aStarSearchTraverse(G, q, v, dest, previous_node, heuristics):
 		q.clear()
 		return None
 
-    # here obtain the cost to come g = f - h
+    # obtain the cost to come g = f - h 
     # validate first if previous g is bigger than zero
 	g = 0
 	if(v[0] > 0):
