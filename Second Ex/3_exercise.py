@@ -28,6 +28,7 @@ def convert_to_list(data):
     for key, value in data.items():
         q.enqueue(key, value)
 
+# Pagerank and Eigenvector implementations
 def implement_algorithms(G):
     print (nx.info(G)) # Graph info
 
@@ -37,7 +38,7 @@ def implement_algorithms(G):
     ###### PAGERANK 
     # convert the pagerank variable in a list prioritized
     convert_to_list(pagerank)
-    print ("\nNodes in orden of importance according to PAGERANK algorithm")
+    print ("\nNodes in order of importance according to PAGERANK algorithm")
 
     # Get the k most important Nodes, q.k_max(k)
     print_result(q.k_max(1))
@@ -45,7 +46,7 @@ def implement_algorithms(G):
     # ###### EIGENVECTOR 
     # convert the eigenvector variable in a list prioritized
     convert_to_list(eigenvector)
-    print ("\nNodes in orden of importance according to EIGENVECTOR algorithm")
+    print ("\nNodes in order of importance according to EIGENVECTOR algorithm")
 
     # Get the k most important Nodes, q.k_max(k)
     print_result(q.k_max(1))
