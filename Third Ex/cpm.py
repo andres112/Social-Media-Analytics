@@ -12,7 +12,7 @@ class Graph:
             self.G.add_edge(item[0], item[1], weight=item[3])
 
     def getGraphInfo(self):
-        return nx.info(self.G)
+        return nx.number_of_nodes(self.G), nx.number_of_edges(self.G)
 
     def __getCliques(self):
         return sorted(list(nx.enumerate_all_cliques(self.G)), key=len)
@@ -41,7 +41,8 @@ with open('DataSets/book1.csv', 'r') as dataset:  # Open the file
 if __name__ == "__main__":
     community = Graph()
     community.createGraph(rows)
-    print(community.getGraphInfo())
+    print('Number of Nodes: {}\nNumber of Edges: {}\n***'.format(
+        community.getGraphInfo()[0], community.getGraphInfo()[1]))
     print('Number of Cliques: {}\nMax Size Clique: {}\n***'.format(
         community.numberOfCliques()[0], community.numberOfCliques()[1]))
     # define the value of k, can be modified 
