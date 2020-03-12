@@ -28,7 +28,7 @@ class Graph:
         return nq, bq
 
     def numberOfCliquesByK(self, k):
-        # get all the cliques with
+        # get all the cliques with k factor
         cliques = [x for x in self.__getCliques() if len(x) == k]
         return cliques
 

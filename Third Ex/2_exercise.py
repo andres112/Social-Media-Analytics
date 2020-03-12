@@ -1,7 +1,8 @@
 import csv
-import copy
+import math
+import numpy as np
 import networkx as nx
-from centrallity import girvan_newman
+from girvan_newman import girvan_newman
 
 class Graph:
     def __init__(self):
@@ -24,29 +25,54 @@ class Graph:
         communities = girvan_newman(self.G)
         return tuple(sorted(c) for c in next(communities))
 
+# method to calculate the vertex similarity
 def vertex_similarity(G):
-    pass
+    vertex_similarity_list = []
+    graph_nodes = list(nx.nodes(G))
+    for current_node in graph_nodes:
+        cn_neighbors = G[current_node]        
+        for node in graph_nodes[graph_nodes.index(current_node)::1]:
+            n_neighbors = G[node]
+            if current_node != node:
+                interception = [item for item in cn_neighbors if item in n_neighbors]
+                vertex_similarity_list.append((current_node, node, len(interception)))
 
+    maxN = max(vertex_similarity_list, key= lambda x: x[2])
+    max_sim = [item for item in vertex_similarity_list if item[2] == maxN[2]]
+    printSimilarity(max_sim)
+
+# method to calculate the cosine similarity
 def cosine_similarity(G):
-    pass
+    cosine_similarity_list = []
+    
+    graph_nodes = list(nx.nodes(G))
+    for current_node in graph_nodes:
+        cn_neighbors = G[current_node]     
+        for node in graph_nodes[graph_nodes.index(current_node)::1]:
+            n_neighbors = G[node]
+            if current_node != node:
+                interception = [item for item in cn_neighbors if item in n_neighbors]
+                square = math.sqrt(len(cn_neighbors)*len(n_neighbors))
+                cosine_similarity_list.append((current_node, node, len(interception)/square))
 
+    maxN = max(cosine_similarity_list, key= lambda x: x[2])
+    max_sim = [item for item in cosine_similarity_list if item[2] == maxN[2]]
+    printSimilarity(max_sim)
+
+# method to calculate the jaccard similarity
 def jaccard_similarity(G):
-    sim = nx.jaccard_coefficient(G)  
-    sim_list=[]
-    for u, v, p in sorted(sim, key = lambda x: x[2], reverse = True):
-        item = {
-            "n1": u,
-            "n2": v,
-            "s": p
-        }
-        sim_list.append(item)
+    sim = list(nx.jaccard_coefficient(G))
+    maxN = max(sim, key= lambda x: x[2])
+    max_sim = [item for item in sim if item[2] == maxN[2]]
+    printSimilarity(max_sim)
+    
 
-    c = [i for i in sim_list if i['s'] == max(sim_list, key = lambda x: x['s'])['s']]
-    print(c)
+# print method
+def printSimilarity(similars):
+    for u, v, p in similars:
+        print('{} - {} -> {}'.format(u,v,p))
 
-def get_max(l):
-    return max(l, key = lambda u: u[2])
-
+# Load dataset
 with open('DataSets/book1.csv', 'r') as dataset:  # Open the file
     nodereader = csv.reader(dataset)  # Read the csv
     # Retrieve the data (using Python list comprhension and list slicing to remove the header row, see footnote 3)
@@ -62,4 +88,11 @@ if __name__ == "__main__":
 
     print("*** Smallest Community \n {}\n".format(min(community.girvanNewman(), key=len)))
 
+    print("*** Vertex Similarity. The nodes most similar")
+    vertex_similarity(community.getGraph())
+
+    print("\n*** Cosine Similarity. The nodes most similar")
+    cosine_similarity(community.getGraph())
+
+    print("\n*** Jaccard Similarity. The nodes most similar")
     jaccard_similarity(community.getGraph())
