@@ -1,6 +1,7 @@
 import csv
 import math
 import numpy as np
+import pandas as pd
 import networkx as nx
 from girvan_newman import girvan_newman
 
@@ -38,7 +39,7 @@ def vertex_similarity(G):
                 vertex_similarity_list.append((current_node, node, len(interception)))
 
     maxN = max(vertex_similarity_list, key= lambda x: x[2])
-    max_sim = [item for item in vertex_similarity_list if item[2] == maxN[2]]
+    max_sim = pd.DataFrame(item for item in vertex_similarity_list if item[2] == maxN[2])
     printSimilarity(max_sim)
 
 # method to calculate the cosine similarity
@@ -56,21 +57,20 @@ def cosine_similarity(G):
                 cosine_similarity_list.append((current_node, node, len(interception)/square))
 
     maxN = max(cosine_similarity_list, key= lambda x: x[2])
-    max_sim = [item for item in cosine_similarity_list if item[2] == maxN[2]]
+    max_sim = pd.DataFrame(item for item in cosine_similarity_list if item[2] == maxN[2])
     printSimilarity(max_sim)
 
 # method to calculate the jaccard similarity
 def jaccard_similarity(G):
     sim = list(nx.jaccard_coefficient(G))
     maxN = max(sim, key= lambda x: x[2])
-    max_sim = [item for item in sim if item[2] == maxN[2]]
+    max_sim = pd.DataFrame(item for item in sim if item[2] == maxN[2])
     printSimilarity(max_sim)
     
 
 # print method
 def printSimilarity(similars):
-    for u, v, p in similars:
-        print('{} - {} -> {}'.format(u,v,p))
+    print(similars.iloc[:len(similars)])
 
 # Load dataset
 with open('DataSets/book1.csv', 'r') as dataset:  # Open the file

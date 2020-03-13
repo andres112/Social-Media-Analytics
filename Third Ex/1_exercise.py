@@ -48,10 +48,10 @@ if __name__ == "__main__":
     # define the value of k, can be modified 
     k = 3
     cliquesByK = community.numberOfCliquesByK(k)
-    print('Number of cliques with k = {}: {}\n***'.format(k, len(cliquesByK)))
+    print('Number of cliques with k = {} ===> {}\n***'.format(k, len(cliquesByK)))
 
     # for the max size clique in graph
     k = community.numberOfCliques()[1]
     cliquesByK = community.numberOfCliquesByK(k)
-    print('Number of cliques with k = {}: {}\n***'.format(k, len(cliquesByK)))
+    print('Number of cliques with k = {} ===> {}\n***'.format(k, len(cliquesByK)))
     print(cliquesByK)
