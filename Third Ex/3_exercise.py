@@ -5,9 +5,28 @@ import matplotlib.pyplot as plt
 from girvan_newman import girvan_newman
 
 
-def drawGraph(graph):
-    # Drawing the Graph using matplotlib
-    nx.draw_networkx(graph, node_color=['red'], with_labels=True)
+def drawRuntime(data_cpm, data_gn):
+    lists = sorted(data_cpm.items())  # sorted by key, return a list of tuples
+    x, y = zip(*lists)  # unpack a list of pairs into two tuples
+
+    # CPM plot
+    plt.subplot(211)
+    plt.plot(x, y)
+    plt.title('CPM')
+    plt.ylabel("Time (s)")
+    plt.grid(True)
+
+    lists = sorted(data_gn.items())
+    x, y = zip(*lists)   
+    # Girvan - Newman Plot
+    plt.subplot(212)
+    plt.plot(x, y, 'r*-')
+    plt.title('Girvan Newman')
+    plt.ylabel("Time (s)")
+    plt.xlabel("Number of Nodes")
+    plt.grid(True)
+
+    plt.suptitle('Runtime performance')
     plt.show()
 
 def girvanNewman(graph):
@@ -20,33 +39,31 @@ if __name__ == '__main__':
 
     # CPM part
     # get initial edges to form the graph for the CPM task
-    cpm_times = []
+    cpm_times = {}
+    print("*** Performance for Clique Percolation Method ***")
     for i in range(50000, nx.number_of_nodes(G), 1000):
         cpm_graph = G.subgraph(list(nodes)[:i])
-        # print("Nodes: ", nx.number_of_nodes(cpm_graph))
-        # print("Edges: ", nx.number_of_edges(cpm_graph))
+        print("---\nNodes: ", nx.number_of_nodes(cpm_graph))
+        print("Edges: ", nx.number_of_edges(cpm_graph))
         start = time.time()
         c = k_clique_communities(cpm_graph, 4)
         end = time.time()
-        # print(end - start)
-        cpm_times.append({i:end - start})
-    
-    print(cpm_times)
+        print("Time in seconds: ",end - start)
+        cpm_times[i] = end - start
 
     # Girman Newman part
     # get initial edges to form the graph for the GN task
-    gn_times = []
-    for i in range(100, 1000, 100):
+    gn_times = {}
+    print("*** Performance for Girman Newman Algortihm ***")
+    for i in range(100, 1001, 100):
         gn_graph = G.subgraph(list(nodes)[:i])
-        # print("Nodes: ", nx.number_of_nodes(gn_graph))
-        # print("Edges: ", nx.number_of_edges(gn_graph))
+        print("---\nNodes: ", nx.number_of_nodes(gn_graph))
+        print("Edges: ", nx.number_of_edges(gn_graph))
         start = time.time()
         c = girvanNewman(gn_graph)
         end = time.time()
-        # print(end - start)
-        gn_times.append({i:end - start})
-
-        # print("*** Number of communities after 1st iteration Givar-Newman: {}\n".format(
-        #     len(girvanNewman(gn_graph))))
-
-    print("************************************\n",gn_times)
+        print("Time in seconds: ",end - start)
+        gn_times[i] = end - start
+    
+    # plot the results for both algorithms
+    drawRuntime(cpm_times, gn_times)
