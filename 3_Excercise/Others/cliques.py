@@ -1,5 +1,6 @@
 from itertools import combinations
 import networkx as nx
+import matplotlib.pyplot as plt
 
 
 def k_cliques(graph):
@@ -29,6 +30,9 @@ def print_cliques(graph, size_k):
             print('%d-cliques = %d, %s.' % (k, len(cliques), cliques))
 
 
-size_k = 3
-graph = nx.read_edgelist('DataSets/got.txt')
+size_k = 4
+graph = nx.read_edgelist('../DataSets/got.txt')
+print(nx.info(graph))
+nx.draw_networkx(graph, node_color=['red'], with_labels=True)
+plt.show()
 print_cliques(graph, size_k)

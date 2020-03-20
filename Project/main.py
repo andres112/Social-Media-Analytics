@@ -25,7 +25,7 @@ ratings['ratings_per_movie'] = data_set.groupby(
 print(ratings.sort_values('ratings_per_movie', ascending=False).head(10))
 
 # Plot
-# # # plots.scatterPlot(ratings)
+plots.scatterPlot(ratings)
 
 # correlation matrix, between movies and users
 movie_matrix = data_set.pivot_table(
