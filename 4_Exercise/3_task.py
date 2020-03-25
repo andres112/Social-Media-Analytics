@@ -58,6 +58,8 @@ def print_communities(partition, G):
 def plot(partition, n_size=20, title="Graph", labels=False):
     values = [partition.get(node) for node in G.nodes()]
 
+    print("*******************************************",values)
+
     nx.draw_spring(G, cmap=plt.get_cmap('jet'), node_color=values,
                    node_size=n_size, with_labels=labels)
     plt.suptitle(title)
