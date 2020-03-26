@@ -32,3 +32,445 @@ Average degree: 3297.7130
 2020-03-26 12:10 -- Main    : done thread 1
 2020-03-26 12:10 -- Main    : before joining thread 2
 2020-03-26 12:10 -- Main    : done thread 2
+2020-03-26 15:04 -- ********************** New Execution *****************************
+2020-03-26 15:04 -- Main    : create and start thread 0
+2020-03-26 15:04 -- Started: Thread 0
+2020-03-26 15:04 -- Main    : create and start thread 1
+2020-03-26 15:04 -- Main    : create and start thread 2
+2020-03-26 15:04 -- Started: Thread 1
+2020-03-26 15:04 -- Main    : before joining thread 0
+2020-03-26 15:04 -- Started: Thread 2
+2020-03-26 15:06 -- Name: 
+Type: Graph
+Number of nodes: 10152
+Number of edges: 7680591
+Average degree: 1513.1188
+2020-03-26 15:06 -- Time in seconds: 115.39039707183838
+2020-03-26 15:06 -- Finished: Thread 0
+2020-03-26 15:06 -- Main    : done thread 0
+2020-03-26 15:06 -- Main    : before joining thread 1
+2020-03-26 15:07 -- Name: 
+Type: Graph
+Number of nodes: 18615
+Number of edges: 12198243
+Average degree: 1310.5821
+2020-03-26 15:07 -- Time in seconds: 171.24495768547058
+2020-03-26 15:07 -- Finished: Thread 2
+2020-03-26 15:07 -- Name: 
+Type: Graph
+Number of nodes: 21181
+Number of edges: 13977818
+Average degree: 1319.8450
+2020-03-26 15:07 -- Time in seconds: 177.97245693206787
+2020-03-26 15:07 -- Finished: Thread 1
+2020-03-26 15:07 -- Main    : done thread 1
+2020-03-26 15:07 -- Main    : before joining thread 2
+2020-03-26 15:07 -- Main    : done thread 2
+2020-03-26 15:10 -- ********************** New Execution *****************************
+2020-03-26 15:10 -- Main    : create and start thread 0
+2020-03-26 15:10 -- Started: Thread 0
+2020-03-26 15:10 -- Main    : create and start thread 1
+2020-03-26 15:10 -- Started: Thread 1
+2020-03-26 15:10 -- Main    : create and start thread 2
+2020-03-26 15:10 -- Main    : before joining thread 0
+2020-03-26 15:10 -- Started: Thread 2
+2020-03-26 15:10 -- Name: 
+Type: Graph
+Number of nodes: 4234
+Number of edges: 501856
+Average degree: 237.0600
+2020-03-26 15:10 -- Time in seconds: 6.726464748382568
+2020-03-26 15:10 -- Finished: Thread 1
+2020-03-26 15:10 -- Name: 
+Type: Graph
+Number of nodes: 3131
+Number of edges: 759294
+Average degree: 485.0169
+2020-03-26 15:10 -- Time in seconds: 8.890018224716187
+2020-03-26 15:10 -- Finished: Thread 2
+2020-03-26 15:10 -- Name: 
+Type: Graph
+Number of nodes: 3562
+Number of edges: 901806
+Average degree: 506.3481
+2020-03-26 15:10 -- Time in seconds: 9.631522417068481
+2020-03-26 15:10 -- Finished: Thread 0
+2020-03-26 15:10 -- Main    : done thread 0
+2020-03-26 15:10 -- Main    : before joining thread 1
+2020-03-26 15:10 -- Main    : done thread 1
+2020-03-26 15:10 -- Main    : before joining thread 2
+2020-03-26 15:10 -- Main    : done thread 2
+2020-03-26 15:11 -- ********************** New Execution *****************************
+2020-03-26 15:11 -- Main    : create and start thread 0
+2020-03-26 15:11 -- Main    : create and start thread 1
+2020-03-26 15:11 -- Started: Thread 0
+2020-03-26 15:11 -- Started: Thread 1
+2020-03-26 15:11 -- Main    : create and start thread 2
+2020-03-26 15:11 -- Main    : before joining thread 0
+2020-03-26 15:11 -- Started: Thread 2
+2020-03-26 15:11 -- Name: 
+Type: Graph
+Number of nodes: 3809
+Number of edges: 1404014
+Average degree: 737.2087
+2020-03-26 15:11 -- Time in seconds: 20.70328164100647
+2020-03-26 15:11 -- Finished: Thread 2
+2020-03-26 15:13 -- Name: 
+Type: Graph
+Number of nodes: 14460
+Number of edges: 10515329
+Average degree: 1454.4024
+2020-03-26 15:13 -- Time in seconds: 107.64699602127075
+2020-03-26 15:13 -- Finished: Thread 0
+2020-03-26 15:13 -- Main    : done thread 0
+2020-03-26 15:13 -- Main    : before joining thread 1
+2020-03-26 15:13 -- Name: 
+Type: Graph
+Number of nodes: 12345
+Number of edges: 13102622
+Average degree: 2122.7415
+2020-03-26 15:13 -- Time in seconds: 113.7589693069458
+2020-03-26 15:13 -- Finished: Thread 1
+2020-03-26 15:13 -- Main    : done thread 1
+2020-03-26 15:13 -- Main    : before joining thread 2
+2020-03-26 15:13 -- Main    : done thread 2
+2020-03-26 15:14 -- ********************** New Execution *****************************
+2020-03-26 15:14 -- Main    : create and start thread 0
+2020-03-26 15:14 -- Started: Thread 0
+2020-03-26 15:14 -- Main    : create and start thread 1
+2020-03-26 15:14 -- Main    : create and start thread 2
+2020-03-26 15:14 -- Started: Thread 1
+2020-03-26 15:14 -- Main    : before joining thread 0
+2020-03-26 15:14 -- Started: Thread 2
+2020-03-26 15:14 -- Name: 
+Type: Graph
+Number of nodes: 2082
+Number of edges: 277921
+Average degree: 266.9750
+2020-03-26 15:14 -- Time in seconds: 3.665947437286377
+2020-03-26 15:14 -- Finished: Thread 2
+2020-03-26 15:14 -- Name: 
+Type: Graph
+Number of nodes: 4111
+Number of edges: 1243559
+Average degree: 604.9910
+2020-03-26 15:14 -- Time in seconds: 10.376393556594849
+2020-03-26 15:14 -- Finished: Thread 1
+2020-03-26 15:14 -- Name: 
+Type: Graph
+Number of nodes: 5543
+Number of edges: 2689895
+Average degree: 970.5557
+2020-03-26 15:14 -- Time in seconds: 14.155574321746826
+2020-03-26 15:14 -- Finished: Thread 0
+2020-03-26 15:14 -- Main    : done thread 0
+2020-03-26 15:14 -- Main    : before joining thread 1
+2020-03-26 15:14 -- Main    : done thread 1
+2020-03-26 15:14 -- Main    : before joining thread 2
+2020-03-26 15:14 -- Main    : done thread 2
+2020-03-26 15:17 -- ********************** New Execution *****************************
+2020-03-26 15:17 -- Main    : create and start thread 0
+2020-03-26 15:17 -- Started: Thread 0
+2020-03-26 15:17 -- Main    : create and start thread 1
+2020-03-26 15:17 -- Started: Thread 1
+2020-03-26 15:17 -- Main    : create and start thread 2
+2020-03-26 15:17 -- Main    : before joining thread 0
+2020-03-26 15:17 -- Started: Thread 2
+2020-03-26 15:17 -- Name: 
+Type: Graph
+Number of nodes: 1089
+Number of edges: 76984
+Average degree: 141.3848
+2020-03-26 15:17 -- Time in seconds: 0.9111452102661133
+2020-03-26 15:17 -- Finished: Thread 2
+2020-03-26 15:18 -- Name: 
+Type: Graph
+Number of nodes: 9577
+Number of edges: 7163372
+Average degree: 1495.9532
+2020-03-26 15:18 -- Time in seconds: 65.22137832641602
+2020-03-26 15:18 -- Finished: Thread 0
+2020-03-26 15:18 -- Main    : done thread 0
+2020-03-26 15:18 -- Main    : before joining thread 1
+2020-03-26 15:19 -- Name: 
+Type: Graph
+Number of nodes: 16344
+Number of edges: 21426310
+Average degree: 2621.9175
+2020-03-26 15:19 -- Time in seconds: 104.44386792182922
+2020-03-26 15:19 -- Finished: Thread 1
+2020-03-26 15:19 -- Main    : done thread 1
+2020-03-26 15:19 -- Main    : before joining thread 2
+2020-03-26 15:19 -- Main    : done thread 2
+2020-03-26 15:36 -- ********************** New Execution *****************************
+2020-03-26 15:36 -- Main    : create and start thread 0
+2020-03-26 15:36 -- Main    : create and start thread 1
+2020-03-26 15:36 -- Started: Thread 0
+2020-03-26 15:36 -- Main    : create and start thread 2
+2020-03-26 15:36 -- Started: Thread 1
+2020-03-26 15:36 -- Started: Thread 2
+2020-03-26 15:36 -- Main    : before joining thread 0
+2020-03-26 15:36 -- Name: 
+Type: Graph
+Number of nodes: 1172
+Number of edges: 36381
+Average degree:  62.0836
+2020-03-26 15:36 -- Time in seconds: 0.41208672523498535
+2020-03-26 15:36 -- Finished: Thread 2
+2020-03-26 15:36 -- Name: 
+Type: Graph
+Number of nodes: 1117
+Number of edges: 99663
+Average degree: 178.4476
+2020-03-26 15:36 -- Time in seconds: 1.1400156021118164
+2020-03-26 15:36 -- Finished: Thread 1
+2020-03-26 15:36 -- Name: 
+Type: Graph
+Number of nodes: 1854
+Number of edges: 212405
+Average degree: 229.1316
+2020-03-26 15:36 -- Time in seconds: 1.3768184185028076
+2020-03-26 15:36 -- Finished: Thread 0
+2020-03-26 15:36 -- Main    : done thread 0
+2020-03-26 15:36 -- Main    : before joining thread 1
+2020-03-26 15:36 -- Main    : done thread 1
+2020-03-26 15:36 -- Main    : before joining thread 2
+2020-03-26 15:36 -- Main    : done thread 2
+2020-03-26 15:38 -- ********************** New Execution *****************************
+2020-03-26 15:38 -- Main    : create and start thread 0
+2020-03-26 15:38 -- Main    : create and start thread 1
+2020-03-26 15:38 -- Started: Thread 0
+2020-03-26 15:38 -- Started: Thread 1
+2020-03-26 15:38 -- Main    : create and start thread 2
+2020-03-26 15:38 -- Main    : before joining thread 0
+2020-03-26 15:38 -- Started: Thread 2
+2020-03-26 15:38 -- Name: 
+Type: Graph
+Number of nodes: 1811
+Number of edges: 185874
+Average degree: 205.2722
+2020-03-26 15:38 -- Name: 
+Type: Graph
+Number of nodes: 2468
+Number of edges: 180720
+Average degree: 146.4506
+2020-03-26 15:38 -- Time in seconds: 1.9083380699157715
+2020-03-26 15:38 -- Time in seconds: 1.8787660598754883
+2020-03-26 15:38 -- Finished: Thread 0
+2020-03-26 15:38 -- Finished: Thread 1
+2020-03-26 15:38 -- Main    : done thread 0
+2020-03-26 15:38 -- Main    : before joining thread 1
+2020-03-26 15:38 -- Main    : done thread 1
+2020-03-26 15:38 -- Main    : before joining thread 2
+2020-03-26 15:38 -- Name: 
+Type: Graph
+Number of nodes: 2073
+Number of edges: 274941
+Average degree: 265.2590
+2020-03-26 15:38 -- Time in seconds: 2.366424083709717
+2020-03-26 15:38 -- Finished: Thread 2
+2020-03-26 15:38 -- Main    : done thread 2
+2020-03-26 15:38 -- ********************** New Execution *****************************
+2020-03-26 15:38 -- Main    : create and start thread 0
+2020-03-26 15:38 -- Started: Thread 0
+2020-03-26 15:38 -- Main    : create and start thread 1
+2020-03-26 15:38 -- Started: Thread 1
+2020-03-26 15:38 -- Main    : create and start thread 2
+2020-03-26 15:38 -- Started: Thread 2
+2020-03-26 15:38 -- Main    : before joining thread 0
+2020-03-26 15:38 -- Name: 
+Type: Graph
+Number of nodes: 2337
+Number of edges: 265541
+Average degree: 227.2495
+2020-03-26 15:38 -- Time in seconds: 3.1267592906951904
+2020-03-26 15:38 -- Finished: Thread 0
+2020-03-26 15:38 -- Main    : done thread 0
+2020-03-26 15:38 -- Main    : before joining thread 1
+2020-03-26 15:38 -- Name: 
+Type: Graph
+Number of nodes: 2274
+Number of edges: 278750
+Average degree: 245.1627
+2020-03-26 15:38 -- Time in seconds: 3.317981004714966
+2020-03-26 15:38 -- Finished: Thread 2
+2020-03-26 15:38 -- Name: 
+Type: Graph
+Number of nodes: 2261
+Number of edges: 402337
+Average degree: 355.8930
+2020-03-26 15:38 -- Time in seconds: 3.775557518005371
+2020-03-26 15:38 -- Finished: Thread 1
+2020-03-26 15:38 -- Main    : done thread 1
+2020-03-26 15:38 -- Main    : before joining thread 2
+2020-03-26 15:38 -- Main    : done thread 2
+2020-03-26 15:42 -- ********************** New Execution *****************************
+2020-03-26 15:42 -- Main    : create and start thread 0
+2020-03-26 15:42 -- Main    : create and start thread 1
+2020-03-26 15:42 -- Started: Thread 0
+2020-03-26 15:42 -- Main    : create and start thread 2
+2020-03-26 15:42 -- Started: Thread 1
+2020-03-26 15:42 -- Main    : before joining thread 0
+2020-03-26 15:42 -- Started: Thread 2
+2020-03-26 15:42 -- Name: 
+Type: Graph
+Number of nodes: 1418
+Number of edges: 90957
+Average degree: 128.2891
+2020-03-26 15:42 -- Time in seconds: 1.1915767192840576
+2020-03-26 15:42 -- Finished: Thread 0
+2020-03-26 15:42 -- Main    : done thread 0
+2020-03-26 15:42 -- Main    : before joining thread 1
+2020-03-26 15:42 -- Name: 
+Type: Graph
+Number of nodes: 1185
+Number of edges: 119043
+Average degree: 200.9165
+2020-03-26 15:42 -- Time in seconds: 1.5015332698822021
+2020-03-26 15:42 -- Finished: Thread 2
+2020-03-26 15:42 -- Name: 
+Type: Graph
+Number of nodes: 1460
+Number of edges: 196952
+Average degree: 269.7973
+2020-03-26 15:42 -- Time in seconds: 1.8071060180664062
+2020-03-26 15:42 -- Finished: Thread 1
+2020-03-26 15:42 -- Main    : done thread 1
+2020-03-26 15:42 -- Main    : before joining thread 2
+2020-03-26 15:42 -- Main    : done thread 2
+2020-03-26 15:42 -- ********************** New Execution *****************************
+2020-03-26 15:42 -- Main    : create and start thread 0
+2020-03-26 15:42 -- Main    : create and start thread 1
+2020-03-26 15:42 -- Started: Thread 0
+2020-03-26 15:42 -- Main    : create and start thread 2
+2020-03-26 15:42 -- Started: Thread 1
+2020-03-26 15:42 -- Started: Thread 2
+2020-03-26 15:42 -- Main    : before joining thread 0
+2020-03-26 15:42 -- Name: 
+Type: Graph
+Number of nodes: 1733
+Number of edges: 84800
+Average degree:  97.8650
+2020-03-26 15:42 -- Time in seconds: 0.9405815601348877
+2020-03-26 15:42 -- Finished: Thread 0
+2020-03-26 15:42 -- Main    : done thread 0
+2020-03-26 15:42 -- Main    : before joining thread 1
+2020-03-26 15:42 -- Name: 
+Type: Graph
+Number of nodes: 1668
+Number of edges: 230355
+Average degree: 276.2050
+2020-03-26 15:42 -- Time in seconds: 2.7103769779205322
+2020-03-26 15:42 -- Finished: Thread 1
+2020-03-26 15:42 -- Main    : done thread 1
+2020-03-26 15:42 -- Main    : before joining thread 2
+2020-03-26 15:42 -- Name: 
+Type: Graph
+Number of nodes: 1897
+Number of edges: 298750
+Average degree: 314.9710
+2020-03-26 15:42 -- Time in seconds: 2.9347519874572754
+2020-03-26 15:42 -- Finished: Thread 2
+2020-03-26 15:42 -- Main    : done thread 2
+2020-03-26 15:43 -- ********************** New Execution *****************************
+2020-03-26 15:43 -- Main    : create and start thread 0
+2020-03-26 15:43 -- Started: Thread 0
+2020-03-26 15:43 -- Main    : create and start thread 1
+2020-03-26 15:43 -- Started: Thread 1
+2020-03-26 15:43 -- Main    : create and start thread 2
+2020-03-26 15:43 -- Main    : before joining thread 0
+2020-03-26 15:43 -- Started: Thread 2
+2020-03-26 15:43 -- Name: 
+Type: Graph
+Number of nodes: 1277
+Number of edges: 60239
+Average degree:  94.3446
+2020-03-26 15:43 -- Time in seconds: 0.3726201057434082
+2020-03-26 15:43 -- Finished: Thread 0
+2020-03-26 15:43 -- Main    : done thread 0
+2020-03-26 15:43 -- Main    : before joining thread 1
+2020-03-26 15:43 -- Name: 
+Type: Graph
+Number of nodes: 2148
+Number of edges: 226872
+Average degree: 211.2402
+2020-03-26 15:43 -- Time in seconds: 2.141211748123169
+2020-03-26 15:43 -- Finished: Thread 1
+2020-03-26 15:43 -- Main    : done thread 1
+2020-03-26 15:43 -- Main    : before joining thread 2
+2020-03-26 15:43 -- Name: 
+Type: Graph
+Number of nodes: 2399
+Number of edges: 439720
+Average degree: 366.5861
+2020-03-26 15:43 -- Time in seconds: 2.6599318981170654
+2020-03-26 15:43 -- Finished: Thread 2
+2020-03-26 15:43 -- Main    : done thread 2
+2020-03-26 15:44 -- ********************** New Execution *****************************
+2020-03-26 15:44 -- Main    : create and start thread 0
+2020-03-26 15:44 -- Main    : create and start thread 1
+2020-03-26 15:44 -- Started: Thread 0
+2020-03-26 15:44 -- Started: Thread 1
+2020-03-26 15:44 -- Main    : create and start thread 2
+2020-03-26 15:44 -- Main    : before joining thread 0
+2020-03-26 15:44 -- Started: Thread 2
+2020-03-26 15:44 -- Name: 
+Type: Graph
+Number of nodes: 1019
+Number of edges: 43269
+Average degree:  84.9244
+2020-03-26 15:44 -- Time in seconds: 0.5629889965057373
+2020-03-26 15:44 -- Finished: Thread 1
+2020-03-26 15:45 -- Name: 
+Type: Graph
+Number of nodes: 6932
+Number of edges: 2283380
+Average degree: 658.7940
+2020-03-26 15:45 -- Time in seconds: 22.143436193466187
+2020-03-26 15:45 -- Finished: Thread 0
+2020-03-26 15:45 -- Main    : done thread 0
+2020-03-26 15:45 -- Main    : before joining thread 1
+2020-03-26 15:45 -- Main    : done thread 1
+2020-03-26 15:45 -- Main    : before joining thread 2
+2020-03-26 15:45 -- Name: 
+Type: Graph
+Number of nodes: 22536
+Number of edges: 13710371
+Average degree: 1216.7528
+2020-03-26 15:45 -- Time in seconds: 55.43270516395569
+2020-03-26 15:45 -- Finished: Thread 2
+2020-03-26 15:45 -- Main    : done thread 2
+2020-03-26 15:54 -- ********************** New Execution *****************************
+2020-03-26 15:54 -- Main    : create and start thread 0
+2020-03-26 15:54 -- Started: Thread 0
+2020-03-26 15:54 -- Main    : create and start thread 1
+2020-03-26 15:54 -- Started: Thread 1
+2020-03-26 15:54 -- Main    : create and start thread 2
+2020-03-26 15:54 -- Started: Thread 2
+2020-03-26 15:54 -- Main    : before joining thread 0
+2020-03-26 15:55 -- Name: 
+Type: Graph
+Number of nodes: 7361
+Number of edges: 4065754
+Average degree: 1104.6744
+2020-03-26 15:55 -- Time in seconds: 54.45790219306946
+2020-03-26 15:55 -- Finished: Thread 0
+2020-03-26 15:55 -- Main    : done thread 0
+2020-03-26 15:55 -- Main    : before joining thread 1
+2020-03-26 15:55 -- Name: 
+Type: Graph
+Number of nodes: 13627
+Number of edges: 4706793
+Average degree: 690.8040
+2020-03-26 15:55 -- Time in seconds: 62.9523811340332
+2020-03-26 15:55 -- Finished: Thread 1
+2020-03-26 15:55 -- Main    : done thread 1
+2020-03-26 15:55 -- Main    : before joining thread 2
+2020-03-26 15:58 -- Name: 
+Type: Graph
+Number of nodes: 24642
+Number of edges: 43551592
+Average degree: 3534.7449
+2020-03-26 15:58 -- Time in seconds: 211.4063684940338
+2020-03-26 15:58 -- Finished: Thread 2
+2020-03-26 15:58 -- Main    : done thread 2
