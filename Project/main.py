@@ -4,14 +4,15 @@ import logging
 import plots
 import warnings
 import math
+import asyncio
+import time
 
 warnings.filterwarnings("ignore")  # ignore warnings in logs
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     level=logging.INFO)  # Logging configuration
 
-# User target and k neighbors
-user = "1"
+# Define the k neighbors
 k = 20
 
 # SupportFunctions
@@ -42,7 +43,7 @@ def sumif(correlations, ratings):
 # the ratings and the mean values of the users
 
 
-def prediction_normalized(correlations, ratings, k, user_mean=np.zeros(k), ru_mean = 0):
+def prediction_normalized(correlations, ratings, k, user_mean=np.zeros(k), ru_mean=0):
     # k is the neigborhood size
     if sumif(correlations.values.reshape(k), ratings) > 0:
         return ru_mean + (sumproduct(correlations.values.reshape(k), ratings, user_mean) / sumif(correlations.values.reshape(k), ratings))
@@ -51,7 +52,7 @@ def prediction_normalized(correlations, ratings, k, user_mean=np.zeros(k), ru_me
 # ***************** Main Function **********************
 
 
-def main(user, k=1):
+def get_movie_matrix():
     # Load data set
     logging.info('Loading Data Set')
     headers = ['userId', 'movieId', 'movie_categoryId',
@@ -60,7 +61,7 @@ def main(user, k=1):
     data_set = pd.read_csv('Dataset/movie-ratings.txt',
                            sep=',', names=headers, usecols=columns, dtype={"userId": "str", "movieId": "str"})
 
-    print(data_set.info(verbose=False))
+    print(data_set.describe())
 
     logging.info('Getting mean value of movie rating by user')
     # average rating for each movie
@@ -75,7 +76,7 @@ def main(user, k=1):
     # sorted by number of ratings
     print(ratings.sort_values('ratings_per_movie', ascending=False).head(10))
 
-    # Plot
+    # Plot number of movies per rating
     plots.scatterPlot(ratings)
 
     logging.info('Getting movie matrix')
@@ -84,29 +85,43 @@ def main(user, k=1):
         index='movieId', columns="userId", values="movieRating")
     print(movie_matrix)
 
+    return movie_matrix
+
+
+def get_user_mean(movie_matrix):
     logging.info('User mean values')
     # We get the average of all the movie ratings for each user
     user_mean = movie_matrix.mean(axis=0, skipna=True)
     # Print the user ratings mean value
     print(user_mean)
 
+    # Plot number of movies per rating
+    plots.avg_ratings_per_user(user_mean)
+
+    return user_mean
+
+
+async def get_pearson_correlation(movie_matrix, user):
     # correlation between the movies: indicates the extent to which two or more variables fluctuate together
     # high correlation coefficient are the movies that are most similar to each other
 
+    # ************** Pearson Coefficient Correlation ********************
     logging.info('Getting Pearson correlation for user {}'.format(user))
     # Pearson correlation coefficient: this will lie between -1 and 1
-    # corr_matrix = movie_matrix.corr(method='pearson')
-    corr_matrix = movie_matrix.corrwith(movie_matrix[user], method='pearson')
-    print(corr_matrix)
+    pearson_corr = movie_matrix.corrwith(movie_matrix[user], method='pearson')
+    print(pearson_corr)
 
+    return pearson_corr
+
+
+async def get_prediction(movie_matrix, pearson_corr, user, k=1):
     # The k similar users for user, the highest the correlation value, the more similar. Observe that the dataframe
     # has been sliced from the index 1, since in the index 0 the value will be 1.00 (self-correlation)
     logging.info('Getting k neighbors to user {}'.format(user))
-    corr_top = (corr_matrix.sort_values(
-        ascending=False)).drop([user]).dropna()[:k].to_frame().T
-    
+    corr_top = (pearson_corr.sort_values(
+        ascending=False)).drop([user])[:k].to_frame().T
+
     print(corr_top)
-    k = len(corr_top.columns) # Modify the neighbors if there are users with NaN similarities
 
     logging.info('Getting the mean of the k neighbors to user')
     # Taking the average ratings only for the top 5 neighbors of Arielle
@@ -146,9 +161,25 @@ def main(user, k=1):
 
     # vector of predicted values for the user
     print(pd.DataFrame(prediction_results,
-                       index=movie_matrix.index, columns=["Prediction"]).dropna() )
+                       index=movie_matrix.index, columns=["Prediction"]).dropna())
+
+    return prediction_results
+
+
+async def main(movie_matrix, user, k):
+    pearson_corr = await get_pearson_correlation(movie_matrix, user)
+    prediction = await get_prediction(movie_matrix, pearson_corr, user, k)
 
 
 if __name__ == "__main__":
-    
-    main(user,k)
+    user = "1"  # userID to predict
+    movie_matrix = get_movie_matrix()
+    user_mean = get_user_mean(movie_matrix)
+    start = time.time()
+    for i in range(1, len(user_mean)+1):
+        user = str(i)
+        asyncio.run(main(movie_matrix, user, k))
+    logging.info("Process done in: {} seconds".format(time.time() - start))
+
+    # TODO: try to implement async development to calculate the pearson correlation per user
+    # TODO: await for previous result and calculate the prediction based on that
