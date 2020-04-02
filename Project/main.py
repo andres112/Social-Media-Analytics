@@ -7,6 +7,8 @@ import math
 import asyncio
 import time
 
+from concurrent.futures import ThreadPoolExecutor
+
 warnings.filterwarnings("ignore")  # ignore warnings in logs
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -61,12 +63,16 @@ def get_movie_matrix():
     data_set = pd.read_csv('Dataset/movie-ratings.txt',
                            sep=',', names=headers, usecols=columns, dtype={"userId": "str", "movieId": "str"})
 
-    print(data_set.describe())
+    num_users = data_set.userId.unique().shape[0] 
+    num_items = data_set.movieId.unique().shape[0] 
+    sparsity = 1 - len(data_set) / (num_users * num_items) 
+    print(f"Users: {num_users}\nMovies: {num_items}\nSparsity: {sparsity}")
 
     logging.info('Getting mean value of movie rating by user')
     # average rating for each movie
     ratings = pd.DataFrame(data_set.groupby('movieId')['movieRating'].mean())
 
+    print(ratings.describe())
     print(ratings.sort_values('movieRating', ascending=False).head(10))
 
     # quantity of ratings per movie
@@ -109,7 +115,7 @@ async def get_pearson_correlation(movie_matrix, user):
     logging.info('Getting Pearson correlation for user {}'.format(user))
     # Pearson correlation coefficient: this will lie between -1 and 1
     pearson_corr = movie_matrix.corrwith(movie_matrix[user], method='pearson')
-    print(pearson_corr)
+    # print(pearson_corr)
 
     return pearson_corr
 
@@ -121,23 +127,23 @@ async def get_prediction(movie_matrix, pearson_corr, user, k=1):
     corr_top = (pearson_corr.sort_values(
         ascending=False)).drop([user])[:k].to_frame().T
 
-    print(corr_top)
+    # print(corr_top)
 
     logging.info('Getting the mean of the k neighbors to user')
     # Taking the average ratings only for the top 5 neighbors of Arielle
     mean_top = []
     for namen in corr_top.columns:
         mean_top.append(user_mean[namen])
-    print(mean_top)
+    # print(mean_top)
 
     logging.info('Getting the ratings of the k neighbors to user')
     # This list is basically to select the rating of the k users
     selection_labels = corr_top.columns.tolist()
     # Here we are using the previous list to select the ratings
     rating_top = movie_matrix.loc[:, selection_labels]
-    print(rating_top)
+    # print(rating_top)
 
-    logging.info('Predicted scores for user {}'.format(user))
+    logging.info('Getting predicted scores for user {}'.format(user))
     # Taking the average rating for the target user (Arielle)
     ru_mean = user_mean[user]
     prediction_results = []
@@ -160,15 +166,19 @@ async def get_prediction(movie_matrix, pearson_corr, user, k=1):
         prediction_results.append(pred_value)
 
     # vector of predicted values for the user
-    print(pd.DataFrame(prediction_results,
-                       index=movie_matrix.index, columns=["Prediction"]).dropna())
+    # print(pd.DataFrame(prediction_results,
+    #                    index=movie_matrix.index, columns=["Prediction"]).dropna())
 
     return prediction_results
 
 
 async def main(movie_matrix, user, k):
     pearson_corr = await get_pearson_correlation(movie_matrix, user)
-    prediction = await get_prediction(movie_matrix, pearson_corr, user, k)
+    prediction = await get_prediction(movie_matrix, pearson_corr, user, k) 
+
+    # pearson_corr = get_pearson_correlation(movie_matrix, user)
+    # prediction = get_prediction(movie_matrix, pearson_corr, user, k)
+    logging.info(f'Prediction for user {user} is done!')
 
 
 if __name__ == "__main__":
@@ -176,9 +186,13 @@ if __name__ == "__main__":
     movie_matrix = get_movie_matrix()
     user_mean = get_user_mean(movie_matrix)
     start = time.time()
-    for i in range(1, len(user_mean)+1):
-        user = str(i)
-        asyncio.run(main(movie_matrix, user, k))
+
+    for name, data in movie_matrix.iteritems():
+        asyncio.run(main(movie_matrix, name, k))
+
+    # with ThreadPoolExecutor(max_workers = 8) as executor:
+    #     for name, data in movie_matrix.iteritems():
+    #         executor.submit(main, movie_matrix, name, k)
     logging.info("Process done in: {} seconds".format(time.time() - start))
 
     # TODO: try to implement async development to calculate the pearson correlation per user
