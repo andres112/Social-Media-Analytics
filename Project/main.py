@@ -7,6 +7,8 @@ import math
 import asyncio
 import time
 
+import splitData
+
 warnings.filterwarnings("ignore")  # ignore warnings in logs
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
@@ -177,12 +179,13 @@ if __name__ == "__main__":
     user = "1"  # userID to predict
     movie_matrix = get_movie_matrix()
     user_mean = get_user_mean(movie_matrix)
-    start = time.time()
 
+    # splitData.split_train_test(movie_matrix, 0.2)
+
+    start = time.time()
     df = pd.DataFrame(index=movie_matrix.index) 
     for name, data in movie_matrix.iteritems():
-        df[name] = asyncio.run(main(movie_matrix, name, k))
-         
+        df[name] = asyncio.run(main(movie_matrix, name, k))         
 
     # with ThreadPoolExecutor(max_workers = 8) as executor:
     #     for name, data in movie_matrix.iteritems():
