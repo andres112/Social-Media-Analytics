@@ -7,15 +7,13 @@ import math
 import asyncio
 import time
 
-from concurrent.futures import ThreadPoolExecutor
-
 warnings.filterwarnings("ignore")  # ignore warnings in logs
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     level=logging.INFO)  # Logging configuration
 
 # Define the k neighbors
-k = 20
+k = 30
 
 # SupportFunctions
 
@@ -63,9 +61,9 @@ def get_movie_matrix():
     data_set = pd.read_csv('Dataset/movie-ratings.txt',
                            sep=',', names=headers, usecols=columns, dtype={"userId": "str", "movieId": "str"})
 
-    num_users = data_set.userId.unique().shape[0] 
-    num_items = data_set.movieId.unique().shape[0] 
-    sparsity = 1 - len(data_set) / (num_users * num_items) 
+    num_users = data_set.userId.unique().shape[0]
+    num_items = data_set.movieId.unique().shape[0]
+    sparsity = 1 - len(data_set) / (num_users * num_items)
     print(f"Users: {num_users}\nMovies: {num_items}\nSparsity: {sparsity}")
 
     logging.info('Getting mean value of movie rating by user')
@@ -159,10 +157,6 @@ async def get_prediction(movie_matrix, pearson_corr, user, k=1):
         pred_value = prediction_normalized(
             corr_top, ratings_row, k, user_mean, ru_mean)
 
-        # without normalization
-        # pred_value = prediction_normalized(
-        #     corr_top, ratings_row, k)
-        # List with the results of the prediction, we add a new result in each iteration, one per each item
         prediction_results.append(pred_value)
 
     # vector of predicted values for the user
@@ -174,11 +168,9 @@ async def get_prediction(movie_matrix, pearson_corr, user, k=1):
 
 async def main(movie_matrix, user, k):
     pearson_corr = await get_pearson_correlation(movie_matrix, user)
-    prediction = await get_prediction(movie_matrix, pearson_corr, user, k) 
-
-    # pearson_corr = get_pearson_correlation(movie_matrix, user)
-    # prediction = get_prediction(movie_matrix, pearson_corr, user, k)
+    prediction = await get_prediction(movie_matrix, pearson_corr, user, k)
     logging.info(f'Prediction for user {user} is done!')
+    return prediction
 
 
 if __name__ == "__main__":
@@ -187,8 +179,10 @@ if __name__ == "__main__":
     user_mean = get_user_mean(movie_matrix)
     start = time.time()
 
+    df = pd.DataFrame(index=movie_matrix.index) 
     for name, data in movie_matrix.iteritems():
-        asyncio.run(main(movie_matrix, name, k))
+        df[name] = asyncio.run(main(movie_matrix, name, k))
+         
 
     # with ThreadPoolExecutor(max_workers = 8) as executor:
     #     for name, data in movie_matrix.iteritems():
