@@ -1,13 +1,14 @@
 import pandas as pd
 import numpy as np
 import logging
-import plots
 import warnings
 import math
 import asyncio
 import time
 
+import plots
 import splitData
+import rmse
 
 warnings.filterwarnings("ignore")  # ignore warnings in logs
 
@@ -15,7 +16,7 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
                     level=logging.INFO)  # Logging configuration
 
 # Define the k neighbors
-k = 30
+k = 5
 
 # SupportFunctions
 
@@ -47,7 +48,7 @@ def sumif(correlations, ratings):
 
 def prediction_normalized(correlations, ratings, k, user_mean=np.zeros(k), ru_mean=0):
     # k is the neigborhood size
-    if sumif(correlations.values.reshape(k), ratings) > 0:
+    if correlations.shape[1] > 0 and sumif(correlations.values.reshape(k), ratings) > 0:
         return ru_mean + (sumproduct(correlations.values.reshape(k), ratings, user_mean) / sumif(correlations.values.reshape(k), ratings))
     return np.nan
 
@@ -124,8 +125,15 @@ async def get_prediction(movie_matrix, pearson_corr, user, k=1):
     # The k similar users for user, the highest the correlation value, the more similar. Observe that the dataframe
     # has been sliced from the index 1, since in the index 0 the value will be 1.00 (self-correlation)
     logging.info('Getting k neighbors to user {}'.format(user))
-    corr_top = (pearson_corr.sort_values(
-        ascending=False)).drop([user])[:k].to_frame().T
+    corr_top = pearson_corr.sort_values(
+        ascending=False)
+        
+    if 0 < len(corr_top) > corr_top.isnull().sum():
+        corr_top = corr_top.drop([user])[:k].to_frame().T
+    else:
+        a = np.empty(len(movie_matrix))
+        a[:] = np.nan
+        return a # if there is not neighbors or the correlation is nan return a vector of nan
 
     # print(corr_top)
 
@@ -176,21 +184,29 @@ async def main(movie_matrix, user, k):
 
 
 if __name__ == "__main__":
-    user = "1"  # userID to predict
     movie_matrix = get_movie_matrix()
     user_mean = get_user_mean(movie_matrix)
 
-    # splitData.split_train_test(movie_matrix, 0.2)
+    logging.info(f'Spliting Dataset between training and testing data')
+    start = time.time()
+    train_data, test_data = splitData.split_train_test(movie_matrix, 0.2)
+    logging.info("Process done in: {0:.2f} seconds".format(time.time() - start))
 
     start = time.time()
-    df = pd.DataFrame(index=movie_matrix.index) 
-    for name, data in movie_matrix.iteritems():
-        df[name] = asyncio.run(main(movie_matrix, name, k))         
+    prediction_matrix = pd.DataFrame(index=train_data.index)
+    for name, data in train_data.iteritems():
+        if(not train_data[name].isnull().all()):
+            prediction_matrix[name] = asyncio.run(main(train_data, name, k))
+        else:
+            a = np.empty(len(train_data))
+            a[:] = np.nan
+            prediction_matrix[name] = a
 
+    print("Prediction Matrix \n",prediction_matrix)
     # with ThreadPoolExecutor(max_workers = 8) as executor:
     #     for name, data in movie_matrix.iteritems():
     #         executor.submit(main, movie_matrix, name, k)
-    logging.info("Process done in: {} seconds".format(time.time() - start))
+    logging.info("Process done in: {0:.2f} seconds".format(time.time() - start))
 
-    # TODO: try to implement async development to calculate the pearson correlation per user
-    # TODO: await for previous result and calculate the prediction based on that
+    rmse_value = rmse.get_rmse(test_data, prediction_matrix)
+    print(f'RMSE:\t{rmse_value}')
