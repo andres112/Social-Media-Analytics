@@ -18,6 +18,8 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
 # Define the k neighbors
 k = 5
 
+bounds = (1, 5)
+
 # SupportFunctions
 
 # This function receives the correlation values and a list of ratings, if  the rating is different than Nan
@@ -61,7 +63,7 @@ def get_movie_matrix():
     headers = ['userId', 'movieId', 'movie_categoryId',
                'reviewId', 'movieRating', 'reviewDate']
     columns = ['userId', 'movieId', 'movie_categoryId', 'movieRating']
-    data_set = pd.read_csv('Dataset/movie-ratings.txt',
+    data_set = pd.read_csv('Dataset/movie-ratings_test.txt',
                            sep=',', names=headers, usecols=columns, dtype={"userId": "str", "movieId": "str"})
 
     num_users = data_set.userId.unique().shape[0]
@@ -91,7 +93,6 @@ def get_movie_matrix():
     movie_matrix = data_set.pivot_table(
         index='movieId', columns="userId", values="movieRating")
     print(movie_matrix)
-
     return movie_matrix
 
 
@@ -104,11 +105,13 @@ def get_user_mean(movie_matrix):
 
     # Plot number of movies per rating
     plots.avg_ratings_per_user(user_mean)
-
     return user_mean
 
 
 async def get_pearson_correlation(movie_matrix, user):
+    # TODO: is this assumption correct?
+    # movie_matrix = movie_matrix.fillna(0)
+
     # correlation between the movies: indicates the extent to which two or more variables fluctuate together
     # high correlation coefficient are the movies that are most similar to each other
 
@@ -116,7 +119,7 @@ async def get_pearson_correlation(movie_matrix, user):
     logging.info('Getting Pearson correlation for user {}'.format(user))
     # Pearson correlation coefficient: this will lie between -1 and 1
     pearson_corr = movie_matrix.corrwith(movie_matrix[user], method='pearson')
-    # print(pearson_corr)
+    # print(f"Correlation for user{user}\n{pearson_corr}")
 
     return pearson_corr
 
@@ -125,16 +128,15 @@ async def get_prediction(movie_matrix, pearson_corr, user, k=1):
     # The k similar users for user, the highest the correlation value, the more similar. Observe that the dataframe
     # has been sliced from the index 1, since in the index 0 the value will be 1.00 (self-correlation)
     logging.info('Getting k neighbors to user {}'.format(user))
-    corr_top = pearson_corr.sort_values(
-        ascending=False)
-        
+    corr_top = pearson_corr.sort_values(ascending=False)
+
+    # TODO: this validation should be keep?
     if 0 < len(corr_top) > corr_top.isnull().sum():
         corr_top = corr_top.drop([user])[:k].to_frame().T
     else:
         a = np.empty(len(movie_matrix))
         a[:] = np.nan
-        return a # if there is not neighbors or the correlation is nan return a vector of nan
-
+        return a  # if there is not neighbors or the correlation is nan return a vector of nan
     # print(corr_top)
 
     logging.info('Getting the mean of the k neighbors to user')
@@ -167,12 +169,11 @@ async def get_prediction(movie_matrix, pearson_corr, user, k=1):
         pred_value = prediction_normalized(
             corr_top, ratings_row, k, user_mean, ru_mean)
 
+        # TODO: This section set limits to the predicted data, is it required?
+        # pred_value = bounds[0] if pred_value < bounds[0] else (
+        #     bounds[1] if pred_value > bounds[1] else pred_value)
+
         prediction_results.append(pred_value)
-
-    # vector of predicted values for the user
-    # print(pd.DataFrame(prediction_results,
-    #                    index=movie_matrix.index, columns=["Prediction"]).dropna())
-
     return prediction_results
 
 
@@ -184,29 +185,38 @@ async def main(movie_matrix, user, k):
 
 
 if __name__ == "__main__":
+    # Matrix of movie ratings
     movie_matrix = get_movie_matrix()
+
+    # Get all user mean values
     user_mean = get_user_mean(movie_matrix)
 
+    # Split dataset: 80% training 20% testing
     logging.info(f'Spliting Dataset between training and testing data')
     start = time.time()
     train_data, test_data = splitData.split_train_test(movie_matrix, 0.2)
-    logging.info("Process done in: {0:.2f} seconds".format(time.time() - start))
+    logging.info("Process done in: {0:.2f} seconds".format(
+        time.time() - start))
 
     start = time.time()
     prediction_matrix = pd.DataFrame(index=train_data.index)
     for name, data in train_data.iteritems():
+        # TODO: this validation should be keep?
         if(not train_data[name].isnull().all()):
             prediction_matrix[name] = asyncio.run(main(train_data, name, k))
         else:
             a = np.empty(len(train_data))
             a[:] = np.nan
             prediction_matrix[name] = a
+    logging.info("Process done in: {0:.2f} seconds".format(
+        time.time() - start))
 
-    print("Prediction Matrix \n",prediction_matrix)
-    # with ThreadPoolExecutor(max_workers = 8) as executor:
-    #     for name, data in movie_matrix.iteritems():
-    #         executor.submit(main, movie_matrix, name, k)
-    logging.info("Process done in: {0:.2f} seconds".format(time.time() - start))
+    print("Prediction Matrix \n", prediction_matrix)
+    print("train Matrix \n", train_data)
+    print("test Matrix \n", test_data)
+
+    # prediction_matrix.to_csv('results/prediction_matrix.txt', sep=';',
+    #                          encoding='utf-8', index=True, header=True, float_format='%.2f')
 
     rmse_value = rmse.get_rmse(test_data, prediction_matrix)
     print(f'RMSE:\t{rmse_value}')
