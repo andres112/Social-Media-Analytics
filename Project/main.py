@@ -197,13 +197,14 @@ if __name__ == "__main__":
     start = time.time()
     prediction_matrix = pd.DataFrame(index=train_data.index)
     for name, data in train_data.iteritems():
-        # TODO: this validation should be keep?
-        if(not train_data[name].isnull().all()):
-            prediction_matrix[name] = asyncio.run(main(train_data, name, k))
-        else:
-            a = np.empty(len(train_data))
-            a[:] = np.nan
-            prediction_matrix[name] = a
+        prediction_matrix[name] = asyncio.run(main(train_data, name, k))
+        # # TODO: this validation should be keep?
+        # if(not train_data[name].isnull().all()):
+        #     prediction_matrix[name] = asyncio.run(main(train_data, name, k))
+        # else:
+        #     a = np.empty(len(train_data))
+        #     a[:] = np.nan
+        #     prediction_matrix[name] = a
     logging.info("Process done in: {0:.2f} seconds".format(
         time.time() - start))
 
