@@ -38,10 +38,8 @@ def sumproduct(correlations, ratings, user_mean):
 
 
 def sumif(correlations, ratings):
-    sum = 0
-    for i in range(len(list(correlations))):
-        if not math.isnan(ratings[i]):
-            sum = sum+correlations[i]
+    ratings_isnan = np.isfinite(ratings)
+    sum = (correlations * ratings_isnan).sum()
     return sum
 
 # Implementation of the Normalized score rating function, this is implemented  using the correlation
@@ -110,7 +108,7 @@ def get_user_mean(movie_matrix):
 
 async def get_pearson_correlation(movie_matrix, user):
     # TODO: is this assumption correct?
-    # movie_matrix = movie_matrix.fillna(0)
+    movie_matrix = movie_matrix.fillna(0)
 
     # correlation between the movies: indicates the extent to which two or more variables fluctuate together
     # high correlation coefficient are the movies that are most similar to each other
@@ -139,13 +137,6 @@ async def get_prediction(movie_matrix, pearson_corr, user, k=1):
         return a  # if there is not neighbors or the correlation is nan return a vector of nan
     # print(corr_top)
 
-    logging.info('Getting the mean of the k neighbors to user')
-    # Taking the average ratings only for the top 5 neighbors of Arielle
-    mean_top = []
-    for namen in corr_top.columns:
-        mean_top.append(user_mean[namen])
-    # print(mean_top)
-
     logging.info('Getting the ratings of the k neighbors to user')
     # This list is basically to select the rating of the k users
     selection_labels = corr_top.columns.tolist()
@@ -153,27 +144,32 @@ async def get_prediction(movie_matrix, pearson_corr, user, k=1):
     rating_top = movie_matrix.loc[:, selection_labels]
     # print(rating_top)
 
-    logging.info('Getting predicted scores for user {}'.format(user))
-    # Taking the average rating for the target user (Arielle)
-    ru_mean = user_mean[user]
-    prediction_results = []
+    logging.info('Getting the mean of the k neighbors to user')
+    # Taking the average ratings only for the top k neighbors
+    mean_top = user_mean[selection_labels]
+    # print(mean_top)
 
-    # We iterate over the rows of the top5 similar users ratings
-    for index, row in rating_top.iterrows():
-        # Getting the rating values for the movies of each user of the top 5
+    logging.info('Getting predicted scores for user {}'.format(user))
+    # Taking the average rating for the target user
+    ru_mean = user_mean[user]
+    prediction_results = pd.DataFrame()
+
+    # We iterate over the rows of the top k similar users ratings
+    for item, row in rating_top.iterrows():
+        # Getting the rating values for the movies of each user of the top 
         ratings_row = row[selection_labels].values
         # Computing the prediction values, using the normalized model. We call this function sending as parameters
         # the correlation values of the k users and the ratings they have assigned to the items
 
         # with normalization
         pred_value = prediction_normalized(
-            corr_top, ratings_row, k, user_mean, ru_mean)
+            corr_top, ratings_row, k, mean_top, ru_mean)
 
         # TODO: This section set limits to the predicted data, is it required?
         # pred_value = bounds[0] if pred_value < bounds[0] else (
         #     bounds[1] if pred_value > bounds[1] else pred_value)
 
-        prediction_results.append(pred_value)
+        prediction_results = prediction_results.append(pd.Series({user: pred_value}, name=item))
     return prediction_results
 
 
