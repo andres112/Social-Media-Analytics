@@ -16,7 +16,7 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
                     level=logging.INFO)  # Logging configuration
 
 # Define the k neighbors
-k = 5
+k = 3
 
 bounds = (1, 5)
 
@@ -90,6 +90,7 @@ def get_movie_matrix():
     # correlation matrix, between movies and users
     movie_matrix = data_set.pivot_table(
         index='movieId', columns="userId", values="movieRating")
+
     print(movie_matrix)
     return movie_matrix
 
@@ -108,6 +109,7 @@ def get_user_mean(movie_matrix):
 
 async def get_pearson_correlation(movie_matrix, user):
     # TODO: is this assumption correct?
+    # The reason to fill nan with 0 is to reduce the sparcity
     movie_matrix = movie_matrix.fillna(0)
 
     # correlation between the movies: indicates the extent to which two or more variables fluctuate together
@@ -208,9 +210,9 @@ if __name__ == "__main__":
     logging.info("Process done in: {0:.2f} seconds".format(
         time.time() - start))
 
-    print("Prediction Matrix \n", prediction_matrix)
     print("train Matrix \n", train_data)
     print("test Matrix \n", test_data)
+    print("Prediction Matrix \n", prediction_matrix)
 
     # prediction_matrix.to_csv('results/prediction_matrix.txt', sep=';',
     #                          encoding='utf-8', index=True, header=True, float_format='%.2f')
