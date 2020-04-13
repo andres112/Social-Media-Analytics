@@ -108,10 +108,6 @@ def get_user_mean(movie_matrix):
 
 
 async def get_pearson_correlation(movie_matrix, user):
-    # TODO: is this assumption correct?
-    # The reason to fill nan with 0 is to reduce the sparcity
-    movie_matrix = movie_matrix.fillna(0)
-
     # correlation between the movies: indicates the extent to which two or more variables fluctuate together
     # high correlation coefficient are the movies that are most similar to each other
 
