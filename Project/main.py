@@ -8,18 +8,18 @@ import time
 
 import plots
 import splitData
-import rmse
+import metrics
 
 warnings.filterwarnings("ignore")  # ignore warnings in logs
 
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     level=logging.INFO)  # Logging configuration
 
-# Define the k neighbors
-k = 5
-
+## Setting variables
+k = 5 # Define the k neighbors
 bounds = (1, 5) # max and min boundaries
 treshold = 0.25 # Treshold for similarity neighborhood
+user = "1"
 
 # SupportFunctions
 
@@ -77,8 +77,7 @@ def get_movie_matrix():
     # average rating for each movie
     ratings = pd.DataFrame(data_set.groupby('movieId')['movieRating'].mean())
 
-    print(ratings.describe())
-    print(ratings.sort_values('movieRating', ascending=False).head(10))
+    print(ratings.describe().T)
 
     # quantity of ratings per movie
     ratings['ratings_per_movie'] = data_set.groupby(
@@ -90,13 +89,12 @@ def get_movie_matrix():
     # Plot number of movies per rating
     plots.scatterPlot(ratings)
 
-    logging.info('Getting movie matrix')
-    # correlation matrix, between movies and users
-    movie_matrix = data_set.pivot_table(
-        index='movieId', columns="userId", values="movieRating")
+    logging.info('Getting Train and Test matrices')
+    train_data, test_data = splitData.split_train_test(data_set, 0.2)
 
-    print(movie_matrix)
-    return movie_matrix
+    print("Train data\n",train_data)
+    print("Test data\n",test_data)
+    return train_data, test_data
 
 
 def get_user_mean(movie_matrix):
@@ -189,29 +187,18 @@ async def main(movie_matrix, user, k):
 
 if __name__ == "__main__":
     # Matrix of movie ratings
-    movie_matrix = get_movie_matrix()
+    train_data, test_data = get_movie_matrix()
 
     # Get all user mean values
-    user_mean = get_user_mean(movie_matrix)
-
-    # Split dataset: 80% training 20% testing
-    logging.info(f'Spliting Dataset between training and testing data')
-    start = time.time()
-    train_data, test_data = splitData.split_train_test(movie_matrix, 0.2)
-    logging.info("Process done in: {0:.2f} seconds".format(
-        time.time() - start))
+    # TODO: after train matrix
+    user_mean = get_user_mean(train_data)
 
     start = time.time()
     prediction_matrix = pd.DataFrame(index=train_data.index)
     for name, data in train_data.iteritems():
+        # name = user ###TODO: delete and replace for N random user
         prediction_matrix[name] = asyncio.run(main(train_data, name, k))
-        # # TODO: this validation should be keep?
-        # if(not train_data[name].isnull().all()):
-        #     prediction_matrix[name] = asyncio.run(main(train_data, name, k))
-        # else:
-        #     a = np.empty(len(train_data))
-        #     a[:] = np.nan
-        #     prediction_matrix[name] = a
+        # break
     logging.info("Process done in: {0:.2f} seconds".format(
         time.time() - start))
 
@@ -222,5 +209,9 @@ if __name__ == "__main__":
     # prediction_matrix.to_csv('results/prediction_matrix.txt', sep=';',
     #                          encoding='utf-8', index=True, header=True, float_format='%.2f')
 
-    rmse_value = rmse.get_rmse(test_data, prediction_matrix)
+    logging.info('\nMetric Calculations RMSE and MAE')
+    rmse_value = metrics.rmse(test_data, prediction_matrix)
     print(f'RMSE:\t{rmse_value}')
+
+    mae_value = metrics.mae(test_data, prediction_matrix)
+    print(f'MAE:\t{mae_value}')
