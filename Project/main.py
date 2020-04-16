@@ -16,9 +16,9 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
                     level=logging.INFO)  # Logging configuration
 
 ## Setting variables
-k = 5 # Define the k neighbors
+k = 3 # Define the k neighbors
 bounds = (1, 5) # max and min boundaries
-treshold = 0.25 # Treshold for similarity neighborhood
+treshold = 0 # Treshold for similarity neighborhood
 user = "1"
 
 # SupportFunctions
@@ -29,11 +29,7 @@ user = "1"
 
 def sumproduct(correlations, ratings, user_mean):
     sum = 0
-    for i in range(len(list(correlations))):
-        if not math.isnan(ratings[i]):
-            # corr = 0 if np.isnan(correlations[i]) else correlations[i]
-            corr = correlations[i]
-            sum = sum+(corr*(ratings[i] - user_mean[i]))
+    sum = np.nansum(correlations*(ratings - user_mean))
     return sum
 
 # This function receives the correlation values and a list of ratings, if  the rating is different than Nan
@@ -42,6 +38,7 @@ def sumproduct(correlations, ratings, user_mean):
 
 def sumif(correlations, ratings):
     # sum all correlation values for users who have rated the item before
+    sum = 0
     ratings_notnan = np.isfinite(ratings)
     sum = np.nansum(correlations * ratings_notnan)
     return sum
@@ -51,6 +48,7 @@ def sumif(correlations, ratings):
 
 
 def prediction_normalized(correlations, ratings, k, user_mean=np.zeros(k), ru_mean=0):
+    ratings = np.array(ratings, dtype=float)
     # k is the neigborhood size
     if correlations.shape[1] > 0 and sumif(correlations.values.reshape(k), ratings) > 0:
         return ru_mean + (sumproduct(correlations.values.reshape(k), ratings, user_mean) / sumif(correlations.values.reshape(k), ratings))
@@ -90,7 +88,7 @@ def get_movie_matrix():
     plots.scatterPlot(ratings, settings)
 
     logging.info('Getting Train and Test matrices')
-    train_data, test_data = splitData.split_train_test(data_set, 0.2)
+    train_data, test_data = splitData.split_train_test(data_set, 0.5)
 
     print("Train data\n",train_data)
     print("Test data\n",test_data)
@@ -118,9 +116,9 @@ async def get_pearson_correlation(movie_matrix, user):
     # Pearson correlation coefficient: this will lie between -1 and 1
     pearson_corr = movie_matrix.corrwith(movie_matrix[user], method='pearson')
     # print(f"Correlation for user{user}\n{pearson_corr}")
-
     return pearson_corr
 
+##*****************************************************************##
 
 async def get_prediction(movie_matrix, pearson_corr, user, k=1):
     # The k similar users for user, the highest the correlation value, the more similar. Observe that the dataframe
@@ -132,15 +130,14 @@ async def get_prediction(movie_matrix, pearson_corr, user, k=1):
     # Treshold and no NaN correlation values
     # TODO: this validation should be keep?
     if 0 < len(corr_top) and ~pd.isnull(corr_top).all():
-        top = corr_top[(corr_top.iloc[0:] < treshold) | (corr_top.iloc[0:].isnull())].index
+        top = corr_top[(corr_top.iloc[0:] < treshold)].index
         corr_top = corr_top.drop(top).drop([user])[:k].to_frame().T
     else:
         a = np.empty(len(movie_matrix))
         a[:] = np.nan
         return a  # if there is not neighbors or the correlation is nan return a vector of nan
 
-    k= len(corr_top.columns) #TODO: modify the neighborhood size if the number of neighbors is less than initial k
-    print(f"Neighborhood size: {k}\n",corr_top)
+    print(f"Neighborhood size: {corr_top.count().sum()}\n",corr_top)
 
     logging.info('Getting the ratings of the k neighbors to user')
     # This list is basically to select the rating of the k users

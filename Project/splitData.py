@@ -8,5 +8,8 @@ def split_train_test(data, percent_test=0.1):
     train = train.pivot_table(index='movieId', columns="userId", values="movieRating")
     test = test.pivot_table(index='movieId', columns="userId", values="movieRating")
 
+    # lack_users = list(test.columns.difference(train.columns).values)
+    # lack_users = pd.DataFrame(columns=lack_users)
+    
     # Return train set and test set
     return train, test
