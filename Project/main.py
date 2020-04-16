@@ -86,8 +86,8 @@ def get_movie_matrix():
     # sorted by number of ratings
     print(ratings.sort_values('ratings_per_movie', ascending=False).head(10))
 
-    # Plot number of movies per rating
-    plots.scatterPlot(ratings)
+    settings = {'axisX':'movieRating', 'axisY': 'ratings_per_movie', 'topic': 'movie', 'labels': ratings.index}
+    plots.scatterPlot(ratings, settings)
 
     logging.info('Getting Train and Test matrices')
     train_data, test_data = splitData.split_train_test(data_set, 0.2)
