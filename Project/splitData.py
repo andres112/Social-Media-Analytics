@@ -1,3 +1,5 @@
+# Split dataset in train and test data
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -7,9 +9,5 @@ def split_train_test(data, percent_test=0.1):
 
     train = train.pivot_table(index='movieId', columns="userId", values="movieRating")
     test = test.pivot_table(index='movieId', columns="userId", values="movieRating")
-
-    # lack_users = list(test.columns.difference(train.columns).values)
-    # lack_users = pd.DataFrame(columns=lack_users)
     
-    # Return train set and test set
     return train, test

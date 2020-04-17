@@ -18,7 +18,7 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
 ## Setting variables
 k = 3 # Define the k neighbors
 bounds = (1, 5) # max and min boundaries
-treshold = 0 # Treshold for similarity neighborhood
+threshold = 0 # Threshold for similarity neighborhood
 user = "1"
 
 # SupportFunctions
@@ -63,7 +63,7 @@ def get_movie_matrix():
     headers = ['userId', 'movieId', 'movie_categoryId',
                'reviewId', 'movieRating', 'reviewDate']
     columns = ['userId', 'movieId', 'movie_categoryId', 'movieRating']
-    data_set = pd.read_csv('Dataset/movie-ratings.txt',
+    data_set = pd.read_csv('Dataset/movie-ratings_test.txt',
                            sep=',', names=headers, usecols=columns, dtype={"userId": "str", "movieId": "str"})
 
     num_users = data_set.userId.unique().shape[0]
@@ -150,11 +150,12 @@ async def get_prediction(movie_matrix, pearson_corr, user, k=1):
     corr_top = pearson_corr.sort_values(ascending=False)
 
     # Neighborhood selection: Based on
-    # Treshold and no NaN correlation values
+    # Threshold and no NaN correlation values
     # TODO: this validation should be keep?
     if 0 < len(corr_top) and ~pd.isnull(corr_top).all():
-        top = corr_top[(corr_top.iloc[0:] < treshold)].index
-        corr_top = corr_top.drop(top).drop([user])[:k].to_frame().T
+        top = set(corr_top[(corr_top.iloc[0:] < threshold)].index.values)
+        top.add(user)
+        corr_top = corr_top.drop(top)[:k].to_frame().T
     else:
         a = np.empty(len(movie_matrix))
         a[:] = np.nan
@@ -177,6 +178,7 @@ async def get_prediction(movie_matrix, pearson_corr, user, k=1):
     logging.info('Getting predicted scores for user {}'.format(user))
     # Taking the average rating for the target user
     ru_mean = user_mean[user]
+
     prediction_results = pd.DataFrame()
 
     # We iterate over the rows of the top k similar users ratings
