@@ -63,7 +63,7 @@ def get_movie_matrix():
     headers = ['userId', 'movieId', 'movie_categoryId',
                'reviewId', 'movieRating', 'reviewDate']
     columns = ['userId', 'movieId', 'movie_categoryId', 'movieRating']
-    data_set = pd.read_csv('Dataset/movie-ratings_test.txt',
+    data_set = pd.read_csv('Dataset/movie-ratings.txt',
                            sep=',', names=headers, usecols=columns, dtype={"userId": "str", "movieId": "str"})
 
     num_users = data_set.userId.unique().shape[0]
@@ -84,11 +84,11 @@ def get_movie_matrix():
     # sorted by number of ratings
     print(ratings.sort_values('ratings_per_movie', ascending=False).head(10))
 
-    settings = {'axisX':'movieRating', 'axisY': 'ratings_per_movie', 'topic': 'movie', 'labels': ratings.index}
+    settings = {'axisX':'movieRating', 'axisY': 'ratings_per_movie', 'topic': 'Movie'}
     plots.scatterPlot(ratings, settings)
 
     logging.info('Getting Train and Test matrices')
-    train_data, test_data = splitData.split_train_test(data_set, 0.5)
+    train_data, test_data = splitData.split_train_test(data_set, 0.2)
 
     print("Train data\n",train_data)
     print("Test data\n",test_data)
@@ -115,7 +115,30 @@ async def get_pearson_correlation(movie_matrix, user):
     logging.info('Getting Pearson correlation for user {}'.format(user))
     # Pearson correlation coefficient: this will lie between -1 and 1
     pearson_corr = movie_matrix.corrwith(movie_matrix[user], method='pearson')
-    # print(f"Correlation for user{user}\n{pearson_corr}")
+    # Here below the pearson correlation computation from scratch is commented because 
+    # the performance is lower than the pandas's corrwith method used above
+    """
+    pearson_corr = pd.DataFrame(columns = movie_matrix.columns)
+    for i in movie_matrix.columns:
+        user_1 = movie_matrix[user][:]
+        user_2 = movie_matrix[i][:]
+        nans = ~np.logical_or(np.isnan(user_1), np.isnan(user_2))
+        user_1 = np.compress(nans.values, user_1.values)
+        user_2 = np.compress(nans.values, user_2.values)
+        
+        # Numerator 
+        user1_product = user_1 - user_1.mean()
+        user2_product = user_2 - user_2.mean()
+        top = (user1_product*user2_product).sum()
+        
+        # Denominator 
+        user1_sqr = np.sqrt((user1_product**2).sum())
+        user2_sqr = np.sqrt((user2_product**2).sum())
+        bottom = user1_sqr * user2_sqr
+        
+        correl = top/bottom
+        pearson_corr[i] = [correl]"""
+
     return pearson_corr
 
 ##*****************************************************************##
@@ -187,7 +210,6 @@ if __name__ == "__main__":
     train_data, test_data = get_movie_matrix()
 
     # Get all user mean values
-    # TODO: after train matrix
     user_mean = get_user_mean(train_data)
 
     start = time.time()
