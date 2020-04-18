@@ -1,4 +1,4 @@
-# SupportFunctions
+# Support Functions for prediction
 
 import numpy as np
 import pandas as pd

@@ -16,7 +16,7 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
                     level=logging.INFO)  # Logging configuration
 
 ## Setting variables
-k = 3 # Define the k neighbors
+k = 1 # Define the k neighbors
 bounds = (1, 5) # max and min boundaries
 threshold = 0 # Threshold for similarity neighborhood
 user = "1"
@@ -196,7 +196,7 @@ async def get_prediction(movie_matrix, pearson_corr, user, k=1):
         pred_value = bounds[0] if pred_value < bounds[0] else (
             bounds[1] if pred_value > bounds[1] else pred_value)
 
-        prediction_results = prediction_results.append(pd.Series({user: pred_value}, name=item))
+        prediction_results = prediction_results.append(pd.Series({user: round(pred_value,2)}, name=item))
     return prediction_results
 
 
@@ -223,9 +223,9 @@ if __name__ == "__main__":
     logging.info("Process done in: {0:.2f} seconds".format(
         time.time() - start))
 
-    print("train Matrix \n", train_data)
-    print("test Matrix \n", test_data.dropna(axis=1, how='all'))
-    print("Prediction Matrix \n", prediction_matrix.dropna(axis=1, how='all'))
+    small_pred = prediction_matrix.dropna(axis=1, how='all').dropna(how='all')
+    print("Prediction Matrix \n", small_pred)
+    print("Test Matrix \n", test_data.dropna(axis=1, how='all').dropna(how='all'))
 
     # prediction_matrix.to_csv('results/prediction_matrix.txt', sep=';',
     #                          encoding='utf-8', index=True, header=True, float_format='%.2f')

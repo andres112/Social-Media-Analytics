@@ -1,4 +1,4 @@
-# RMSE and MAE measures
+# RMSE and MAE measurments functions
 
 import numpy as np
 import pandas as pd
