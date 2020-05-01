@@ -7,7 +7,8 @@ from sklearn.model_selection import train_test_split
 def split_train_test(data, percent_test=0.1):
     train, test = train_test_split(data, test_size= percent_test)
 
-    train = train.pivot_table(index='movieId', columns="userId", values="movieRating")
+    train = train.pivot_table(index='movieId', columns="userId", values="movieRating")    
+    # train = train.fillna(train.mean(axis=0, skipna=True))
     test = test.pivot_table(index='movieId', columns="userId", values="movieRating")
     
     return train, test

@@ -15,10 +15,11 @@ warnings.filterwarnings("ignore")  # ignore warnings in logs
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     level=logging.INFO)  # Logging configuration
 
-## Setting variables
-k = 5 # Define the k neighbors
-bounds = (1, 5) # max and min boundaries
-threshold = 0 # Threshold for similarity neighborhood
+# Setting variables
+k = 5  # Define the k neighbors
+bounds = (1, 5)  # max and min boundaries
+threshold = 0  # Threshold for similarity neighborhood
+popular_movie = 50
 
 # SupportFunctions
 
@@ -62,8 +63,8 @@ def get_movie_matrix():
     headers = ['userId', 'movieId', 'movie_categoryId',
                'reviewId', 'movieRating', 'reviewDate']
     columns = ['userId', 'movieId', 'movie_categoryId', 'movieRating']
-    data_set = pd.read_csv('Dataset/movie-ratings_test.txt',
-                           sep=',', names=headers, usecols=columns, dtype={"userId": "str", "movieId": "str"})
+    data_set = pd.read_csv('Dataset/movie-ratings.txt',
+                           sep=',', names=headers, usecols=columns, dtype={'userId': 'str', 'movieId': 'str', 'movie_categoryId': 'str'})
 
     num_users = data_set.userId.unique().shape[0]
     num_items = data_set.movieId.unique().shape[0]
@@ -79,18 +80,29 @@ def get_movie_matrix():
     # quantity of ratings per movie
     ratings['ratings_per_movie'] = data_set.groupby(
         'movieId')['movieRating'].count()
-
+    
     # sorted by number of ratings
     print(ratings.sort_values('ratings_per_movie', ascending=False).head(10))
 
-    settings = {'axisX':'movieRating', 'axisY': 'ratings_per_movie', 'topic': 'Movie'}
+    user_mean = get_user_mean(data_set.pivot_table(index='movieId', columns="userId", values="movieRating"))
+    # Plot number of movies per rating
+    plots.avg_ratings_per_user(user_mean)
+
+    # Remove somo unpopular movies from dataset (noise)
+    unpopular_movies = ratings.loc[ratings['ratings_per_movie']
+                                   < popular_movie].index
+    data_set.drop(data_set.loc[data_set['movieId'].isin(
+        unpopular_movies)].index, inplace=True)    
+
+    settings = {'axisX': 'movieRating',
+                'axisY': 'ratings_per_movie', 'topic': 'Movie'}
     plots.scatterPlot(ratings, settings)
 
     logging.info('Getting Train and Test matrices')
     train_data, test_data = splitData.split_train_test(data_set, 0.2)
 
-    print("Train data\n",train_data)
-    print("Test data\n",test_data)
+    print("Train data\n", train_data)
+    print("Test data\n", test_data)
     return train_data, test_data
 
 
@@ -101,8 +113,6 @@ def get_user_mean(movie_matrix):
     # Print the user ratings mean value
     print(user_mean)
 
-    # Plot number of movies per rating
-    plots.avg_ratings_per_user(user_mean)
     return user_mean
 
 
@@ -114,7 +124,7 @@ def get_pearson_correlation(movie_matrix, user):
     logging.info('Getting Pearson correlation for user {}'.format(user))
     # Pearson correlation coefficient: this will lie between -1 and 1
     pearson_corr = movie_matrix.corrwith(movie_matrix[user], method='pearson')
-    # Here below the pearson correlation computation from scratch is commented because 
+    # Here below the pearson correlation computation from scratch is commented because
     # the performance is lower than the pandas's corrwith method used above
     """
     pearson_corr = pd.DataFrame(columns = movie_matrix.columns)
@@ -142,6 +152,7 @@ def get_pearson_correlation(movie_matrix, user):
 
 ##*****************************************************************##
 
+
 def get_prediction(movie_matrix, pearson_corr, user, k=1):
     # The k similar users for user, the highest the correlation value, the more similar. Observe that the dataframe
     # has been sliced from the index 1, since in the index 0 the value will be 1.00 (self-correlation)
@@ -160,7 +171,7 @@ def get_prediction(movie_matrix, pearson_corr, user, k=1):
         a[:] = np.nan
         return a  # if there is not neighbors or the correlation is nan return a vector of nan
 
-    print(f"Neighborhood size: {corr_top.count().sum()}\n",corr_top)
+    print(f"Neighborhood size: {corr_top.count().sum()}\n", corr_top)
 
     logging.info('Getting the ratings of the k neighbors to user')
     # This list is basically to select the rating of the k users
@@ -182,7 +193,7 @@ def get_prediction(movie_matrix, pearson_corr, user, k=1):
 
     # We iterate over the rows of the top k similar users ratings
     for item, row in rating_top.iterrows():
-        # Getting the rating values for the movies of each user of the top 
+        # Getting the rating values for the movies of each user of the top
         ratings_row = row[selection_labels].values
         # Computing the prediction values, using the normalized model. We call this function sending as parameters
         # the correlation values of the k users and the ratings they have assigned to the items
@@ -195,7 +206,8 @@ def get_prediction(movie_matrix, pearson_corr, user, k=1):
         pred_value = bounds[0] if pred_value < bounds[0] else (
             bounds[1] if pred_value > bounds[1] else pred_value)
 
-        prediction_results = prediction_results.append(pd.Series({user: round(pred_value,2)}, name=item))
+        prediction_results = prediction_results.append(
+            pd.Series({user: round(pred_value, 2)}, name=item))
     return prediction_results
 
 
@@ -224,7 +236,8 @@ if __name__ == "__main__":
 
     small_pred = prediction_matrix.dropna(axis=1, how='all').dropna(how='all')
     print("Prediction Matrix \n", small_pred)
-    print("Test Matrix \n", test_data.dropna(axis=1, how='all').dropna(how='all'))
+    print("Test Matrix \n", test_data.dropna(
+        axis=1, how='all').dropna(how='all'))
 
     logging.info('\nMetric Calculations RMSE and MAE')
     rmse_value = metrics.rmse(test_data, prediction_matrix)
