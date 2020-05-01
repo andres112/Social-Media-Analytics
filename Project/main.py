@@ -19,7 +19,6 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
 k = 5 # Define the k neighbors
 bounds = (1, 5) # max and min boundaries
 threshold = 0 # Threshold for similarity neighborhood
-user = "1"
 
 # SupportFunctions
 
@@ -107,7 +106,7 @@ def get_user_mean(movie_matrix):
     return user_mean
 
 
-async def get_pearson_correlation(movie_matrix, user):
+def get_pearson_correlation(movie_matrix, user):
     # correlation between the movies: indicates the extent to which two or more variables fluctuate together
     # high correlation coefficient are the movies that are most similar to each other
 
@@ -143,7 +142,7 @@ async def get_pearson_correlation(movie_matrix, user):
 
 ##*****************************************************************##
 
-async def get_prediction(movie_matrix, pearson_corr, user, k=1):
+def get_prediction(movie_matrix, pearson_corr, user, k=1):
     # The k similar users for user, the highest the correlation value, the more similar. Observe that the dataframe
     # has been sliced from the index 1, since in the index 0 the value will be 1.00 (self-correlation)
     logging.info('Getting k neighbors to user {}'.format(user))
@@ -200,9 +199,9 @@ async def get_prediction(movie_matrix, pearson_corr, user, k=1):
     return prediction_results
 
 
-async def main(movie_matrix, user, k):
-    pearson_corr = await get_pearson_correlation(movie_matrix, user)
-    prediction = await get_prediction(movie_matrix, pearson_corr, user, k)
+def main(movie_matrix, user, k):
+    pearson_corr = get_pearson_correlation(movie_matrix, user)
+    prediction = get_prediction(movie_matrix, pearson_corr, user, k)
     logging.info(f'Prediction for user {user} is done!')
     return prediction
 
@@ -218,7 +217,7 @@ if __name__ == "__main__":
     prediction_matrix = pd.DataFrame(index=train_data.index)
     for name, data in train_data.iteritems():
         # name = user ###TODO: delete and replace for N random user
-        prediction_matrix[name] = asyncio.run(main(train_data, name, k))
+        prediction_matrix[name] = main(train_data, name, k)
         # break
     logging.info("Process done in: {0:.2f} seconds".format(
         time.time() - start))
