@@ -16,7 +16,7 @@ logging.basicConfig(format='%(asctime)s - %(message)s',
                     level=logging.INFO)  # Logging configuration
 
 ## Setting variables
-k = 1 # Define the k neighbors
+k = 5 # Define the k neighbors
 bounds = (1, 5) # max and min boundaries
 threshold = 0 # Threshold for similarity neighborhood
 user = "1"
