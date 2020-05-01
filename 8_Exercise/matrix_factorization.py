@@ -2,7 +2,7 @@ import numpy
 import pandas as pd
 
 
-def matrix_factorization(R, U, V, K, max_iter=10000, alpha=0.0002, lambda_=0.02):
+def matrix_factorization(R, U, V, K, max_iter=5000, alpha=0.001, lambda_=0.02):
     '''
     :param R: user(row)-item(column) matrix. R similar to UxV^T
     :param U: |user| x k matrix. Each row of U represents the associations between a user and the features

@@ -227,9 +227,6 @@ if __name__ == "__main__":
     print("Prediction Matrix \n", small_pred)
     print("Test Matrix \n", test_data.dropna(axis=1, how='all').dropna(how='all'))
 
-    # prediction_matrix.to_csv('results/prediction_matrix.txt', sep=';',
-    #                          encoding='utf-8', index=True, header=True, float_format='%.2f')
-
     logging.info('\nMetric Calculations RMSE and MAE')
     rmse_value = metrics.rmse(test_data, prediction_matrix)
     print(f'RMSE:\t{rmse_value}')
