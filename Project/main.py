@@ -64,7 +64,7 @@ def get_movie_matrix():
                'reviewId', 'movieRating', 'reviewDate']
     columns = ['userId', 'movieId', 'movie_categoryId', 'movieRating']
     data_set = pd.read_csv('Dataset/movie-ratings.txt',
-                           sep=',', names=headers, usecols=columns, dtype={'userId': 'str', 'movieId': 'str', 'movie_categoryId': 'str'})
+                           sep=',', names=headers, usecols=columns, dtype={'userId': 'int', 'movieId': 'int', 'movie_categoryId': 'int'})
 
     num_users = data_set.userId.unique().shape[0]
     num_items = data_set.movieId.unique().shape[0]
@@ -84,9 +84,10 @@ def get_movie_matrix():
     # sorted by number of ratings
     print(ratings.sort_values('ratings_per_movie', ascending=False).head(10))
 
-    user_mean = get_user_mean(data_set.pivot_table(index='movieId', columns="userId", values="movieRating"))
+    dataset_user_av = data_set.groupby("userId").mean()
+    dataset_user_av.describe().T
     # Plot number of movies per rating
-    plots.avg_ratings_per_user(user_mean)
+    plots.avg_ratings_per_user(dataset_user_av['movieRating'])
 
     # Remove somo unpopular movies from dataset (noise)
     unpopular_movies = ratings.loc[ratings['ratings_per_movie']
@@ -99,7 +100,7 @@ def get_movie_matrix():
     plots.scatterPlot(ratings, settings)
 
     logging.info('Getting Train and Test matrices')
-    train_data, test_data = splitData.split_train_test(data_set, 0.2)
+    train_data, test_data = splitData.split_train_test(data_set, dataset_user_av, 'mean', 0.2)
 
     print("Train data\n", train_data)
     print("Test data\n", test_data)
