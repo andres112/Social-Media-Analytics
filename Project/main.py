@@ -2,8 +2,6 @@ import pandas as pd
 import numpy as np
 import logging
 import warnings
-import math
-import asyncio
 import time
 
 import plots
@@ -231,7 +229,6 @@ if __name__ == "__main__":
     start = time.time()
     prediction_matrix = pd.DataFrame(index=train_data.index)
     for name, data in train_data.iteritems():
-        # name = user ###TODO: delete and replace for N random user
         prediction_matrix[name] = main(train_data, name, k)
         # break
     logging.info("Process done in: {0:.2f} seconds".format(
