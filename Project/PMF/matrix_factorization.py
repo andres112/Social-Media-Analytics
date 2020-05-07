@@ -1,8 +1,9 @@
 import numpy as np
 import pandas as pd
+from scipy.stats import norm
 
 
-def matrix_factorization(R, U, V, K, max_iter=300, alpha=0.05, lambda_=0.02):
+def matrix_factorization(R, U, V, K, max_iter=300, alpha=0.05, std = 0.01):
     '''
     :param R: user(row)-item(column) matrix. R similar to UxV^T
     :param U: |user| x k matrix. Each row of U represents the associations between a user and the features
@@ -14,7 +15,10 @@ def matrix_factorization(R, U, V, K, max_iter=300, alpha=0.05, lambda_=0.02):
     :return: updated matrices U and V
     '''
     V = V.T  # V factor matrix Transposed
-    for current_iter in range(max_iter):
+    std_r = std
+    std_u = np.std(U)
+    std_v = np.std(V)
+    for current_iter in range(max_iter):        
         for i in range(len(R)):  # R rows iterator
             for j in range(len(R[i])):  # R column iterator
                 if R[i][j] > 0:  # indicator function
@@ -22,9 +26,10 @@ def matrix_factorization(R, U, V, K, max_iter=300, alpha=0.05, lambda_=0.02):
                     eij = R[i][j] - np.dot(U[i, :], V[:, j])
                     for k in range(K):
                         # Computing the partial derivative w.r.t. U
-                        Ueij = -(eij)*V[k][j] + lambda_ * U[i][k]
+                        
+                        Ueij = (eij)*V[k][j] + norm.pdf(x=U[i][k], loc=0, scale=std_u)
                         # Computing the partial derivative w.r.t. V
-                        Veij = -(eij)*U[i][k] + lambda_ * V[k][j]
+                        Veij = (eij)*U[i][k] + norm.pdf(x=V[k][j], loc=0, scale=std_v)
                         # Update U
                         U[i][k] = U[i][k] - alpha*Ueij
                         # Update V
@@ -39,10 +44,10 @@ def matrix_factorization(R, U, V, K, max_iter=300, alpha=0.05, lambda_=0.02):
         for i in range(len(R)):
             for j in range(len(R[i])):
                 if R[i][j] > 0:
-                    error = error + (R[i][j] - np.dot(U[i, :], V[:, j]))**2
+                    error = error + np.power((R[i][j] - np.dot(U[i, :], V[:, j])),2)/(2*np.power(std_v,2))
                     # compute the overall error (objective loss function)
                     for k in range(K):
-                        error = error + (lambda_/2)*(U[i][k]**2 + V[k][j]**2)
+                        error = error + (U[i][k]**2)/(2*np.power(std_u,2)) + (V[k][j]**2)/(2*np.power(std_v,2))
                     counter = counter + 1
 
         average_error = error / counter
@@ -57,40 +62,40 @@ def matrix_factorization(R, U, V, K, max_iter=300, alpha=0.05, lambda_=0.02):
 
 
 def main():
-    # R_observed = [
-    #     [4, 4, 5, 3, 5],
-    #     [5, 5, 3, 0, 4],
-    #     [5, 0, 2, 5, 3],
-    #     [5, 4, 3, 4, 0],
-    #     [4, 3, 0, 3, 5],
-    #     [4, 5, 4, 5, 5],
-    # ]
+    R_observed = [
+        [4, 4, 5, 3, 5],
+        [5, 5, 3, 0, 4],
+        [5, 0, 2, 5, 3],
+        [5, 4, 3, 4, 0],
+        [4, 3, 0, 3, 5],
+        [4, 5, 4, 5, 5],
+    ]
 
-    headers = ['userId', 'movieId', 'movie_categoryId',
-               'reviewId', 'movieRating', 'reviewDate']
-    columns = ['userId', 'movieId', 'movie_categoryId', 'movieRating']
-    dataset = pd.read_csv('movie-ratings.txt',
-                           sep=',', names=headers, usecols=columns, dtype={'userId': 'str', 'movieId': 'str', 'movie_categoryId': 'str'})
+    # headers = ['userId', 'movieId', 'movie_categoryId',
+    #            'reviewId', 'movieRating', 'reviewDate']
+    # columns = ['userId', 'movieId', 'movie_categoryId', 'movieRating']
+    # dataset = pd.read_csv('movie-ratings.txt',
+    #                        sep=',', names=headers, usecols=columns, dtype={'userId': 'str', 'movieId': 'str', 'movie_categoryId': 'str'})
 
-    N = 100
-    # average rating for each movie
-    ratings = pd.DataFrame(dataset.groupby('movieId')['movieRating'].mean())
-    ratings['ratings_per_movie'] = dataset.groupby('movieId')['movieRating'].count()
-    unpopular_movies = ratings.loc[ratings['ratings_per_movie'] < N].index
-    dataset.drop(dataset.loc[dataset['movieId'].isin(unpopular_movies)].index, inplace=True) 
+    # N = 100
+    # # average rating for each movie
+    # ratings = pd.DataFrame(dataset.groupby('movieId')['movieRating'].mean())
+    # ratings['ratings_per_movie'] = dataset.groupby('movieId')['movieRating'].count()
+    # unpopular_movies = ratings.loc[ratings['ratings_per_movie'] < N].index
+    # dataset.drop(dataset.loc[dataset['movieId'].isin(unpopular_movies)].index, inplace=True) 
 
 
-    R_observed = dataset.pivot_table(index='userId', columns="movieId", values="movieRating").fillna(0)
+    # R_observed = dataset.pivot_table(index='userId', columns="movieId", values="movieRating").fillna(0)
      
 
-    movies = R_observed.columns
-    users = R_observed.index
+    # movies = R_observed.columns
+    # users = R_observed.index
 
     R_observed = np.array(R_observed)
 
     rows_number = len(R_observed)  # number of rows (users)
     colums_number = len(R_observed[0])  # number of columns (items)
-    K = 10
+    K = 3
 
     # how to obtain U and V: initialize the two matrices with some values, calculate how 'different' their product is to r, and then try to minimize this difference iteratively (gradient descent).
     U = 0.1 * np.random.randn(rows_number, K)
@@ -99,7 +104,7 @@ def main():
     new_U, new_V = matrix_factorization(R_observed, U, V, K)
     R_predicted = np.dot(new_U, new_V.T)
 
-    R_predicted = pd.DataFrame(R_predicted, columns=movies, index=users).round(0)
+    # R_predicted = pd.DataFrame(R_predicted, columns=movies, index=users).round(0)
     print(R_predicted)
 
 
