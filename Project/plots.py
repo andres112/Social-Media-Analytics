@@ -27,7 +27,7 @@ def avg_ratings_per_user(user_means):
     ax.fill_between(np.arange(len(user_means)), user_means.values, alpha=0.3)
     ax.set_xticklabels('')
     ax.set_ylabel('Rating') 
-    ax.set_xlabel(f'{len(user_means)} average ratings per user') 
+    ax.set_xlabel(f'{len(user_means)} average rating per user') 
     ax.set_ylim(0, 5.5) 
     ax.set_xlim(0, len(user_means))
     plt.title('User rating trend')
