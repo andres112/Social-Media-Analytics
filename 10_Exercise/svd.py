@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-X = np.genfromtxt('senate_votes.txt')
+X = np.genfromtxt('senate_votes_test.txt')
 # Get the U matrix, s Singular Values and V transposed matrix
 U, s, VT = np.linalg.svd(X, full_matrices=False)
 
