@@ -23,8 +23,16 @@ adamic_adar = nx.adamic_adar_index(UG, all_nodes) # the graph and the pair of no
 
 # Print the values
 print(" \nAdamic-Adar implementation \n")
+max=0
 for u, v, p in adamic_adar:
+    if(p>max):
+        max = p
+        sim_u = u
+        sim_v = v
     print ('{}, {} -> {:.5f}'.format(u,v,p))
+
+print (f'\nThe most similar according Adamic-Adar: {sim_u}, {sim_v} -> {max:.5f}')
+
 
 # According to this results the highest Adamic-Adar similarity is between u2 and u3
 

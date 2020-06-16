@@ -14,6 +14,7 @@ print(data_3)
 adjacency_matrix = pd.read_csv("task_2_adjacency.csv", sep=";", header=None)
 degree_vector = pd.read_csv("task_2_degree.csv", sep=";", header=None)
 age_vector = pd.read_csv("task_2_age.csv", sep=";", header=None)
+indicator_matrix = pd.read_csv("indicator_matrix.csv", header=None)
 degree_vector = degree_vector.T
 age_vector = age_vector.T
 print(adjacency_matrix)
@@ -26,7 +27,7 @@ def calculateB():
     for i in adjacency_matrix.columns:
         b_row = pd.Series([])
         for j in adjacency_matrix.columns:
-            item = round(adjacency_matrix[j][i] -
+            item = round(adjacency_matrix[i][j] -
                          (degree_vector[j]*degree_vector[i])/44, 3)
             b_row = b_row.append(item, ignore_index=True)
 
@@ -37,6 +38,9 @@ def calculateB():
 
 B_matrix = calculateB()
 print(B_matrix)
+modularity = indicator_matrix.transpose().dot(B_matrix.dot(indicator_matrix)).values
+
+print(f'Modularity = {(modularity/44).sum()}')
 
 def calculateXX():
     b_matrix = pd.DataFrame()
